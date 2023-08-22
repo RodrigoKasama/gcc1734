@@ -124,7 +124,7 @@ def depthFirstSearch(problem):
 
         return []; // Se retornou isso DEVE estar errado...
 
-        """
+    """
 
     initialNode = getStartNode(problem)
 
