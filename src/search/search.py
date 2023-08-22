@@ -4,7 +4,7 @@
 # educational purposes provided that (1) you do not distribute or publish
 # solutions, (2) you retain this notice, and (3) you provide clear
 # attribution to UC Berkeley, including a link to http://ai.berkeley.edu.
-# 
+#
 # Attribution Information: The Pacman AI projects were developed at UC Berkeley.
 # The core projects and autograders were primarily created by John DeNero
 # (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
@@ -19,6 +19,7 @@ Pacman agents (in searchAgents.py).
 
 import util
 
+
 class SearchProblem:
     """
     This class outlines the structure of a search problem, but doesn't implement
@@ -31,6 +32,7 @@ class SearchProblem:
         """
         Returns the start state for the search problem.
         """
+
         util.raiseNotDefined()
 
     def isGoalState(self, state):
@@ -97,7 +99,8 @@ def tinyMazeSearch(problem):
     from game import Directions
     s = Directions.SOUTH
     w = Directions.WEST
-    return  [s, s, w, s, w, w, s, w]
+    return [s, s, w, s, w, w, s, w]
+
 
 def depthFirstSearch(problem):
     """
@@ -106,19 +109,63 @@ def depthFirstSearch(problem):
     Your search algorithm needs to return a list of actions that reaches the
     goal. Make sure to implement a graph search algorithm.
 
-    To get started, you might want to try some of these simple commands to
-    understand the search problem that is being passed in:
+    # Etapas:
+        1. Define o estado inicial do problema
+        2. Definimos a fronteira
+        3. Definimos a coleção de nós que já foram visitados
 
-    print("Start:", problem.getStartState())
-    print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
-    """
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+        # Enquanto a fronteira não está vazia (todos os estados percorridos
+                Removemos ele da fronteira
+                Ele já foi explorado? Se sim, próxima iteração
+                Adicionamos a coleção de nós visitados...(Marcamos como percorrido)
+                Se ele é o objetivo buscado, então retornar o plano até esse estado (getActionSequence(node)) FIM
+
+                Como esse nó não nos interessa mais, adicionamos a lista de 'childs' desse nó à fronteira e seguimos em frente
+
+        return []; // Se retornou isso DEVE estar errado...
+
+        """
+
+    initialNode = getStartNode(problem)
+
+    frontier = util.Stack()  # LIFO
+
+    # Add a raiz a fronteira --> Primeiro nó a se explorar
+    frontier.push(initialNode)
+
+    # Nós visitados representa um conjunto de nós (não há repetição)
+    nos_visitados = set()
+
+    # Enquanto a frontera (Stack) não está vazia
+    while not frontier.isEmpty():
+
+        # Seleciona e remove o último nó add a fronteira? Não deveria ser o mais custoso?
+        curr_no = frontier.pop()
+        curr_state = curr_no["STATE"]  # Coleta o estado desse nó
+
+        if curr_state in nos_visitados:
+            continue
+
+        nos_visitados.add(curr_state)
+
+        if problem.isGoalState(curr_state):
+            return getActionSequence(curr_no)
+
+        for no_filho in problem.expand(curr_state):
+            child_no = getChildNode(no_filho, curr_no)
+            frontier.push(child_no)
+    return []
+
+    # print("Start:", problem.getStartState())
+    # print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
+    # input("aaa")
+
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
     util.raiseNotDefined()
+
 
 def nullHeuristic(state, problem=None):
     """
@@ -127,12 +174,34 @@ def nullHeuristic(state, problem=None):
     """
     return 0
 
+
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
     util.raiseNotDefined()
 
+# *********************************************************************************************************************************************************************
 
+
+def getStartNode(problem):
+    return {"STATE": problem.getStartState(), "PATH-COST": 0}
+
+
+def getChildNode(sucessor, parent_node):
+    child_node = {'STATE': sucessor[0], 'PARENT': parent_node,
+                  'ACTION': sucessor[1], 'PATH-COST': parent_node['PATH-COST'] + sucessor[2]}
+    return child_node
+
+
+def getActionSequence(node):
+    actions = []
+    while node['PATH-COST'] > 0:
+        actions.insert(0, node['ACTION'])
+        node = node['PARENT']
+    return actions
+
+
+# *********************************************************************************************************************************************************************
 # Abbreviations
 bfs = breadthFirstSearch
 dfs = depthFirstSearch
