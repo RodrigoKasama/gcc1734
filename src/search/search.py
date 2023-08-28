@@ -217,10 +217,11 @@ def nullHeuristic(state, problem=None):
 
 def aStarSearch(problem, heuristic=nullHeuristic):
 	"""Search the node that has the lowest combined cost and heuristic first."""
- 
+
+	# Nó inicial
 	node = getStartNode(problem)
 
-	
+	# Cria uma função anonima que, dado um nó retorna o 
 	fn_total_cost_for_node = lambda a_node: a_node['PATH-COST'] + heuristic(a_node['STATE'], problem=problem)
 
 	frontier = util.PriorityQueueWithFunction(fn_total_cost_for_node)
