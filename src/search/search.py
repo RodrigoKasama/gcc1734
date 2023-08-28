@@ -110,21 +110,23 @@ def depthFirstSearch(problem):
     goal. Make sure to implement a graph search algorithm.
 
     # Etapas:
-        1. Define o estado inicial do problema
-        2. Definimos a fronteira
-        3. Definimos a coleção de nós que já foram visitados
+                    1. Define o estado inicial do problema
+                    2. Definimos a fronteira
+                    3. Definimos a coleção de nós que já foram visitados
 
-        # Enquanto a fronteira não está vazia (todos os estados percorridos
-                Removemos ele da fronteira
-                Ele já foi explorado? Se sim, próxima iteração
-                Adicionamos a coleção de nós visitados...(Marcamos como percorrido)
-                Se ele é o objetivo buscado, então retornar o plano até esse estado (getActionSequence(node)) FIM
+                    # Enquanto a fronteira não está vazia (todos os estados percorridos
+                                                    Removemos ele da fronteira
+                                                    Ele já foi explorado? Se sim, próxima iteração
+                                                    Adicionamos a coleção de nós visitados...(Marcamos como percorrido)
+                                                    Se ele é o objetivo buscado, então retornar o plano até esse estado (getActionSequence(node)) FIM
 
-                Como esse nó não nos interessa mais, adicionamos a lista de 'childs' desse nó à fronteira e seguimos em frente
+                                                    Como esse nó não nos interessa mais, adicionamos a lista de 'childs' desse nó à fronteira e seguimos em frente
 
-        return []; // Se retornou isso DEVE estar errado...
+                    return []; // Se retornou isso DEVE estar errado...
 
     """
+
+    # Q1
 
     initialNode = getStartNode(problem)
 
@@ -154,16 +156,54 @@ def depthFirstSearch(problem):
         for no_filho in problem.expand(curr_state):
             child_no = getChildNode(no_filho, curr_no)
             frontier.push(child_no)
-    return []
 
-    # print("Start:", problem.getStartState())
-    # print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
-    # input("aaa")
+    return []
+    """
+		A ordem de exploração foi de acordo com o esperado? O Pacman realmente passa por todos 
+  		os estados explorados no seu caminho para o objetivo?
+	
+		Essa é uma solução ótima? Senão, discuta o que a busca em profundidade está fazendo de errado?
+		- Não é uma solução ótima, visto que a natureza da BFS indica que será encontrados o plano "mais a esquerda" na árvore de busca.
+		- Ao executar, podemos ver que no plano escolido pela IA foi o mais longo... 
+		- Mais alguma coisa?
+
+
+	"""
 
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
-    "*** YOUR CODE HERE ***"
+
+    initialNode = getStartNode(problem)
+
+    frontier = util.Queue()  # FIFO
+
+    # Add a raiz a fronteira --> Primeiro nó a se explorar
+    frontier.push(initialNode)
+
+    # Nós visitados...representa um Conjunto de nós (não há repetição)
+    nos_visitados = set()
+
+    # Enquanto a frontera (Fila) não está vazia
+    while not frontier.isEmpty():
+
+        curr_no = frontier.pop()
+        curr_state = curr_no["STATE"]  # Coleta o estado desse nó
+
+        if curr_state in nos_visitados:
+            continue
+
+        nos_visitados.add(curr_state)
+
+        if problem.isGoalState(curr_state):
+            return getActionSequence(curr_no)
+
+        for no_filho in problem.expand(curr_state):
+            child_no = getChildNode(no_filho, curr_no)
+            frontier.push(child_no)
+
+    return []
+
     util.raiseNotDefined()
 
 
