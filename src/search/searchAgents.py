@@ -372,8 +372,8 @@ class CornersProblem(search.SearchProblem):
 				action, stepCost), where 'child' is a child to the current
 				state, 'action' is the action required to get there, and 'stepCost'
 				is the incremental cost of expanding to that child
-		"""
-
+		
+		--- Original
 		children = []
 		for action in self.getActions(state):
 			# Add a child state to the child list if the action is legal
@@ -382,7 +382,7 @@ class CornersProblem(search.SearchProblem):
 
 		self._expanded += 1  # DO NOT CHANGE
 		return children
-		"""
+		
 		Returns child states, the actions they require, and a cost of 1.
 
 		 As noted in search.py:
@@ -391,8 +391,8 @@ class CornersProblem(search.SearchProblem):
 		 child to the current state, 'action' is the action
 		 required to get there, and 'stepCost' is the incremental
 		 cost of expanding to that child
+		
 		"""
-
 		children = []
 		for action in self.getActions(state):
 			nextState = self.getNextState(state, action)
@@ -432,9 +432,9 @@ class CornersProblem(search.SearchProblem):
 		dx, dy = Actions.directionToVector(action)
 		nextx, nexty = int(x + dx), int(y + dy)
 		"*** YOUR CODE HERE ***"
-		util.raiseNotDefined()
+		# util.raiseNotDefined()
 		# you will need to replace the None part of the following tuple.
-		return ((nextx, nexty), None)
+		return ((nextx, nexty), self.corners)
 
 	def getCostOfActionSequence(self, actions):
 		"""
