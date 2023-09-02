@@ -327,22 +327,27 @@ class CornersProblem(search.SearchProblem):
 		top, right = self.walls.height-2, self.walls.width-2
 		
 		self.corners = ((1, 1), (1, top), (right, 1), (right, top))
-		
+		self.visitedCorners = []
+  
 		for corner in self.corners:
 			if not startingGameState.hasFood(*corner):
 				print('Warning: no food in corner ' + str(corner))
 				
 		self._expanded = 0  # DO NOT CHANGE; Number of search nodes expanded
-		
+		# For display purposes
+		self._visited, self._visitedlist, self._expanded = {}, [], 0  # DO NOT CHANGE
+  
 		# Please add any code here which you would like to use
 		# in initializing the problem
 		"*** YOUR CODE HERE ***"
+		self.StartState = (self.startingPosition, self.corners)
 
 	def getStartState(self):
 		"""
 		Returns the start state (in your state space, not the full Pacman state
 		space)
 		"""
+		return self.StartState
 		top, right = self.walls.height-2, self.walls.width-2
 		corners = [(1, 1), (1, top), (right, 1), (right, top)]
 		return (self.startingPosition, self.corners)
@@ -354,8 +359,9 @@ class CornersProblem(search.SearchProblem):
 		Returns whether this search state is a goal state of the problem.
 		"""
 		"*** YOUR CODE HERE ***"
-		return (len(state[1]) == 1 and state[0] == state[1][0])
+		if len(self.visitedCorners) == 4: print("Fim de Jogo")
 
+		return (len(state[1]) == 1 and state[0] == state[1][0])
 
 		util.raiseNotDefined()
 
@@ -404,13 +410,13 @@ class CornersProblem(search.SearchProblem):
 		if state not in self._visited:
 			self._visited[state] = True
 			self._visitedlist.append(state)
-
+		print("Children:", children)
 		return children
 
 
 	def getActions(self, state):
-		possible_directions = [Directions.NORTH,
-							   Directions.SOUTH, Directions.EAST, Directions.WEST]
+		possible_directions = [Directions.NORTH,Directions.SOUTH,
+                         		Directions.EAST, Directions.WEST]
 		valid_actions_from_state = []
 		for action in possible_directions:
 			x, y = state[0]
@@ -431,10 +437,16 @@ class CornersProblem(search.SearchProblem):
 		x, y = state[0]
 		dx, dy = Actions.directionToVector(action)
 		nextx, nexty = int(x + dx), int(y + dy)
+
 		"*** YOUR CODE HERE ***"
 		# util.raiseNotDefined()
 		# you will need to replace the None part of the following tuple.
-		return ((nextx, nexty), self.corners)
+		GetUnpassedCorners = lambda collection1, collection2: [curr_corner for curr_corner in collection1 if curr_corner not in collection2]
+
+		# print("-----> ", GetUnpassedCorners(self.corners, self.visitedCorners))
+		
+		return ((nextx, nexty), None)
+		return ((nextx, nexty), GetUnpassedCorners(self.corners, self.visitedCorners))
 
 	def getCostOfActionSequence(self, actions):
 		"""
