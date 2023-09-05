@@ -327,7 +327,7 @@ class CornersProblem(search.SearchProblem):
 		top, right = self.walls.height-2, self.walls.width-2
 		
 		self.corners = ((1, 1), (1, top), (right, 1), (right, top))
-		self.visitedCorners = []
+		self.unvisitedCorners = []
   
 		for corner in self.corners:
 			if not startingGameState.hasFood(*corner):
@@ -348,6 +348,7 @@ class CornersProblem(search.SearchProblem):
 		space)
 		"""
 		return self.StartState
+	
 		top, right = self.walls.height-2, self.walls.width-2
 		corners = [(1, 1), (1, top), (right, 1), (right, top)]
 		return (self.startingPosition, self.corners)
@@ -359,7 +360,7 @@ class CornersProblem(search.SearchProblem):
 		Returns whether this search state is a goal state of the problem.
 		"""
 		"*** YOUR CODE HERE ***"
-		if len(self.visitedCorners) == 4: print("Fim de Jogo")
+		# if len(self.visitedCorners) == 4: print("Fim de Jogo")
 
 		return (len(state[1]) == 1 and state[0] == state[1][0])
 
@@ -407,10 +408,12 @@ class CornersProblem(search.SearchProblem):
 
 		# Bookkeeping for display purposes
 		self._expanded += 1  # DO NOT CHANGE
+
 		if state not in self._visited:
 			self._visited[state] = True
 			self._visitedlist.append(state)
-		print("Children:", children)
+
+		# print("Children:", children)
 		return children
 
 
@@ -441,12 +444,24 @@ class CornersProblem(search.SearchProblem):
 		"*** YOUR CODE HERE ***"
 		# util.raiseNotDefined()
 		# you will need to replace the None part of the following tuple.
-		GetUnpassedCorners = lambda collection1, collection2: [curr_corner for curr_corner in collection1 if curr_corner not in collection2]
+		# GetUnpassedCorners = lambda collection1, collection2: [curr_corner for curr_corner in collection1 if curr_corner not in collection2]
 
-		# print("-----> ", GetUnpassedCorners(self.corners, self.visitedCorners))
-		
-		return ((nextx, nexty), None)
-		return ((nextx, nexty), GetUnpassedCorners(self.corners, self.visitedCorners))
+		GetUnpassedCorners = lambda next_pos, unpassed_corners: tuple(corner for corner in unpassed_corners if next_pos is corner)
+		# if (nextx, nexty) in state[1]:
+
+		nextState = ((nextx, nexty), GetUnpassedCorners((nextx, nexty), state[1]))
+		print(nextState)
+		# return ((nextx, nexty), None)
+
+		nextUnvisited = []
+
+		# if state in state[1]:
+			# copiar state[1]
+			# alterar a copia pra tirar o state da copia
+
+		# nextState = ((nextx, nexty), nextUnvisited)
+
+		return nextState
 
 	def getCostOfActionSequence(self, actions):
 		"""
