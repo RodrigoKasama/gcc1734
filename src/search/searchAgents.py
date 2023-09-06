@@ -362,7 +362,7 @@ class CornersProblem(search.SearchProblem):
 		"*** YOUR CODE HERE ***"
 		# if len(self.visitedCorners) == 4: print("Fim de Jogo")
 
-		return (len(state[1]) == 1 and state[0] == state[1][0])
+		return (len(state[1]) == 1)
 
 		util.raiseNotDefined()
 
@@ -434,34 +434,35 @@ class CornersProblem(search.SearchProblem):
 			"Invalid next state passed to getActionCost().")
 		return 1
 
-	def getNextState(self, state, action):
-		assert action in self.getActions(state), (
-			"Invalid action passed to getActionCost().")
+	def getNextState(self, state, action):   
+		assert action in self.getActions(state), ("Invalid action passed to getActionCost().")
+
+  
 		x, y = state[0]
 		dx, dy = Actions.directionToVector(action)
 		nextx, nexty = int(x + dx), int(y + dy)
-
+		nextPosition = (nextx, nexty)
+		
 		"*** YOUR CODE HERE ***"
-		# util.raiseNotDefined()
-		# you will need to replace the None part of the following tuple.
-		# GetUnpassedCorners = lambda collection1, collection2: [curr_corner for curr_corner in collection1 if curr_corner not in collection2]
+  
+		# Se o próximo passo for um dos cantos, remove esse canto da lista de cantos não explorados, do contrpario retorna o state...
+  
+		nextState = [nextPosition, ]
 
-		GetUnpassedCorners = lambda next_pos, unpassed_corners: tuple(corner for corner in unpassed_corners if next_pos is corner)
-		# if (nextx, nexty) in state[1]:
+		curr_state = list(state[1]).copy()
+		if nextPosition not in state[1]:
+			nextState.append(curr_state)
+		else:
+			curr_state.remove(nextPosition)
+			nextState.append(curr_state)
+   
 
-		nextState = ((nextx, nexty), GetUnpassedCorners((nextx, nexty), state[1]))
-		print(nextState)
+		print("Estado atual:  ", list(state))
+		# nextState = ((nextx, nexty), GetUnpassedCorners((nextx, nexty), state[1]))
+		print("Próximo estado:", nextState)
 		# return ((nextx, nexty), None)
 
-		nextUnvisited = []
-
-		# if state in state[1]:
-			# copiar state[1]
-			# alterar a copia pra tirar o state da copia
-
-		# nextState = ((nextx, nexty), nextUnvisited)
-
-		return nextState
+		return tuple(nextState)
 
 	def getCostOfActionSequence(self, actions):
 		"""
