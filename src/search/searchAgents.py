@@ -199,7 +199,7 @@ class PositionSearchProblem(search.SearchProblem):
 		Returns child states, the actions they require, and a cost of 1.
 
 		 As noted in search.py:
-				 For a given state, this should return a list of triples,
+										 For a given state, this should return a list of triples,
 		 (child, action, stepCost), where 'child' is a
 		 child to the current state, 'action' is the action
 		 required to get there, and 'stepCost' is the incremental
@@ -325,18 +325,19 @@ class CornersProblem(search.SearchProblem):
 		self.walls = startingGameState.getWalls()
 		self.startingPosition = startingGameState.getPacmanPosition()
 		top, right = self.walls.height-2, self.walls.width-2
-		
+
 		self.corners = ((1, 1), (1, top), (right, 1), (right, top))
 		self.unvisitedCorners = []
-  
+
 		for corner in self.corners:
 			if not startingGameState.hasFood(*corner):
 				print('Warning: no food in corner ' + str(corner))
-				
+
 		self._expanded = 0  # DO NOT CHANGE; Number of search nodes expanded
+
 		# For display purposes
-		self._visited, self._visitedlist, self._expanded = {}, [], 0  # DO NOT CHANGE
-  
+		# self._visited, self._visitedlist, self._expanded = {}, [], 0  # DO NOT CHANGE
+
 		# Please add any code here which you would like to use
 		# in initializing the problem
 		"*** YOUR CODE HERE ***"
@@ -348,7 +349,7 @@ class CornersProblem(search.SearchProblem):
 		space)
 		"""
 		return self.StartState
-	
+
 		top, right = self.walls.height-2, self.walls.width-2
 		corners = [(1, 1), (1, top), (right, 1), (right, top)]
 		return (self.startingPosition, self.corners)
@@ -360,45 +361,23 @@ class CornersProblem(search.SearchProblem):
 		Returns whether this search state is a goal state of the problem.
 		"""
 		"*** YOUR CODE HERE ***"
-		# if len(self.visitedCorners) == 4: print("Fim de Jogo")
 
-		return (len(state[1]) == 1)
-
+		return (len(state[1]) == 1 and state[1][0] == state[0] or len(state[1]) == 0)
 		util.raiseNotDefined()
 
 	def expand(self, state):
 		"""
 
 		IGUAL AO OUTRO EXPAND
-		
-
 		Returns child states, the actions they require, and a cost of 1.
 
 		 As noted in search.py:
-				For a given state, this should return a list of triples, (child,
-				action, stepCost), where 'child' is a child to the current
-				state, 'action' is the action required to get there, and 'stepCost'
-				is the incremental cost of expanding to that child
-		
-		--- Original
-		children = []
-		for action in self.getActions(state):
-			# Add a child state to the child list if the action is legal
-			# You should call getActions, getActionCost, and getNextState.
-			"*** YOUR CODE HERE ***"
-
-		self._expanded += 1  # DO NOT CHANGE
-		return children
-		
-		Returns child states, the actions they require, and a cost of 1.
-
-		 As noted in search.py:
-				 For a given state, this should return a list of triples,
+		 For a given state, this should return a list of triples,
 		 (child, action, stepCost), where 'child' is a
 		 child to the current state, 'action' is the action
 		 required to get there, and 'stepCost' is the incremental
 		 cost of expanding to that child
-		
+
 		"""
 		children = []
 		for action in self.getActions(state):
@@ -409,17 +388,16 @@ class CornersProblem(search.SearchProblem):
 		# Bookkeeping for display purposes
 		self._expanded += 1  # DO NOT CHANGE
 
-		if state not in self._visited:
-			self._visited[state] = True
-			self._visitedlist.append(state)
+		# if state not in self._visited:
+		# 	self._visited[state] = True
+		# 	self._visitedlist.append(state)
 
 		# print("Children:", children)
 		return children
 
-
 	def getActions(self, state):
-		possible_directions = [Directions.NORTH,Directions.SOUTH,
-                         		Directions.EAST, Directions.WEST]
+		possible_directions = [Directions.NORTH, Directions.SOUTH,
+							   Directions.EAST, Directions.WEST]
 		valid_actions_from_state = []
 		for action in possible_directions:
 			x, y = state[0]
@@ -430,37 +408,37 @@ class CornersProblem(search.SearchProblem):
 		return valid_actions_from_state
 
 	def getActionCost(self, state, action, next_state):
-		assert next_state == self.getNextState(state, action), (
-			"Invalid next state passed to getActionCost().")
+		assert next_state == self.getNextState(state, action), ("Invalid next state passed to getActionCost().")
 		return 1
 
-	def getNextState(self, state, action):   
-		assert action in self.getActions(state), ("Invalid action passed to getActionCost().")
+	def getNextState(self, state, action):
+		assert action in self.getActions(
+			state), ("Invalid action passed to getActionCost().")
 
-  
 		x, y = state[0]
 		dx, dy = Actions.directionToVector(action)
 		nextx, nexty = int(x + dx), int(y + dy)
+  
 		nextPosition = (nextx, nexty)
-		
-		"*** YOUR CODE HERE ***"
-  
-		# Se o próximo passo for um dos cantos, remove esse canto da lista de cantos não explorados, do contrpario retorna o state...
-  
 		nextState = [nextPosition, ]
 
-		curr_state = list(state[1]).copy()
-		if nextPosition not in state[1]:
-			nextState.append(curr_state)
-		else:
-			curr_state.remove(nextPosition)
-			nextState.append(curr_state)
-   
+		"*** YOUR CODE HERE ***"
 
-		print("Estado atual:  ", list(state))
-		# nextState = ((nextx, nexty), GetUnpassedCorners((nextx, nexty), state[1]))
-		print("Próximo estado:", nextState)
-		# return ((nextx, nexty), None)
+		# Se o próximo passo for um dos cantos, remove esse canto da lista de cantos não explorados, do contrpario retorna o state...
+
+		unvisited_corners = list(state[1]).copy()
+
+		# Se a proxima posição é um canto, remove o canto que vai ser visitado da lista de cantos não-visitados
+		# Do contrário,  retorna o mesmo state[1] anterior
+  
+		if nextPosition in state[1]:
+			unvisited_corners.remove(nextPosition)
+   
+		nextState.append(tuple(unvisited_corners))
+
+		# print("Estado Atual:", state)   
+		# print("Cantos Não-visitados:  ", unvisited_corners)
+		# print("Novo Estado: ", nextState, "\n")
 
 		return tuple(nextState)
 
@@ -471,7 +449,9 @@ class CornersProblem(search.SearchProblem):
 		"""
 		if actions == None:
 			return 999999
+
 		x, y = self.startingPosition
+  
 		for action in actions:
 			dx, dy = Actions.directionToVector(action)
 			x, y = int(x + dx), int(y + dy)
@@ -483,10 +463,7 @@ class CornersProblem(search.SearchProblem):
 def cornersHeuristic(state, problem):
 	"""
 	A heuristic for the CornersProblem that you defined.
-
-	  state:   The current search state
-					   (a data structure you chose in your search problem)
-
+	  state:   The current search state (a data structure you chose in your search problem)
 	  problem: The CornersProblem instance for this layout.
 
 	This function should always return a number that is a lower bound on the
