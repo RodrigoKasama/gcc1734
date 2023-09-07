@@ -199,7 +199,7 @@ class PositionSearchProblem(search.SearchProblem):
 		Returns child states, the actions they require, and a cost of 1.
 
 		 As noted in search.py:
-										 For a given state, this should return a list of triples,
+																		 For a given state, this should return a list of triples,
 		 (child, action, stepCost), where 'child' is a
 		 child to the current state, 'action' is the action
 		 required to get there, and 'stepCost' is the incremental
@@ -408,7 +408,8 @@ class CornersProblem(search.SearchProblem):
 		return valid_actions_from_state
 
 	def getActionCost(self, state, action, next_state):
-		assert next_state == self.getNextState(state, action), ("Invalid next state passed to getActionCost().")
+		assert next_state == self.getNextState(
+			state, action), ("Invalid next state passed to getActionCost().")
 		return 1
 
 	def getNextState(self, state, action):
@@ -418,7 +419,7 @@ class CornersProblem(search.SearchProblem):
 		x, y = state[0]
 		dx, dy = Actions.directionToVector(action)
 		nextx, nexty = int(x + dx), int(y + dy)
-  
+
 		nextPosition = (nextx, nexty)
 		nextState = [nextPosition, ]
 
@@ -430,13 +431,13 @@ class CornersProblem(search.SearchProblem):
 
 		# Se a proxima posição é um canto, remove o canto que vai ser visitado da lista de cantos não-visitados
 		# Do contrário,  retorna o mesmo state[1] anterior
-  
+
 		if nextPosition in state[1]:
 			unvisited_corners.remove(nextPosition)
-   
+
 		nextState.append(tuple(unvisited_corners))
 
-		# print("Estado Atual:", state)   
+		# print("Estado Atual:", state)
 		# print("Cantos Não-visitados:  ", unvisited_corners)
 		# print("Novo Estado: ", nextState, "\n")
 
@@ -451,7 +452,7 @@ class CornersProblem(search.SearchProblem):
 			return 999999
 
 		x, y = self.startingPosition
-  
+
 		for action in actions:
 			dx, dy = Actions.directionToVector(action)
 			x, y = int(x + dx), int(y + dy)
@@ -473,17 +474,26 @@ def cornersHeuristic(state, problem):
 	corners = problem.corners  # These are the corner coordinates
 	# These are the walls of the maze, as a Grid (game.py)
 	walls = problem.walls
-
 	"*** YOUR CODE HERE ***"
-	return 0  # Default to trivial solution
+	currentPosition = state[0]
+	goals = list(state[1])
+ 
+	manhattan_fn = lambda pos, goal: abs(pos[0] - goal[0]) + abs(pos[1] + goal[1])
+	manDistances = [manhattan_fn(currentPosition, goal) for goal in goals]
 
+	# Não possui um bom resultado
+	# euclidian_fn = lambda pos, goal: ((pos[0] - goal[0]) ** 2 + (pos[1] - goal[1]) ** 2) ** 0.5
+	# eucliDistances = [euclidian_fn(position, goal) for goal in goals]
+	# print(manDistances, max(manDistances))
+	# Default to trivial solution
+	return min(manDistances) if manDistances is None else 0
+	return max(eucliDistances) if eucliDistances else 0
 
 class AStarCornersAgent(SearchAgent):
 	"A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
 
 	def __init__(self):
-		self.searchFunction = lambda prob: search.aStarSearch(
-			prob, cornersHeuristic)
+		self.searchFunction = lambda prob: search.aStarSearch(prob, cornersHeuristic)
 		self.searchType = CornersProblem
 
 
@@ -601,6 +611,14 @@ def foodHeuristic(state, problem):
 	problem.heuristicInfo['wallCount']
 	"""
 	position, foodGrid = state
+	man_distance = lambda pos, goal: abs(pos[0] - goal[0]) + abs(pos[1] + goal[1])
+	euclidian_fn = lambda pos, goal: ((pos[0] - goal[0]) ** 2 + (pos[1] - goal[1]) ** 2) ** 0.5
+	distances = [euclidian_fn(position, comida) for comida in foodGrid.asList()]
+	# print(position)
+	# print(foodGrid.asList())
+	# print(problem.walls.asList())
+	# input("")
+	return max(distances) if distances else 0
 	"*** YOUR CODE HERE ***"
 	return 0
 
