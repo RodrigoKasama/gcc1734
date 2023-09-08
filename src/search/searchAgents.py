@@ -609,18 +609,37 @@ def foodHeuristic(state, problem):
 	value, try: problem.heuristicInfo['wallCount'] = problem.walls.count()
 	Subsequent calls to this heuristic can access
 	problem.heuristicInfo['wallCount']
+
 	"""
 	position, foodGrid = state
-	man_distance = lambda pos, goal: abs(pos[0] - goal[0]) + abs(pos[1] + goal[1])
-	euclidian_fn = lambda pos, goal: ((pos[0] - goal[0]) ** 2 + (pos[1] - goal[1]) ** 2) ** 0.5
-	distances = [euclidian_fn(position, comida) for comida in foodGrid.asList()]
-	# print(position)
-	# print(foodGrid.asList())
-	# print(problem.walls.asList())
-	# input("")
-	return max(distances) if distances else 0
-	"*** YOUR CODE HERE ***"
-	return 0
+ 
+	def getMazeDistance(start, end):
+		"""
+		Returns the maze distance between any two points, using the search functions
+		you have already built.
+		"""
+		try:
+			return problem.heuristicInfo[(start, end)]
+		except:
+			dist = mazeDistance(start, end, problem.startingGameState)
+			problem.heuristicInfo[(start, end)] = dist
+			return dist
+
+	distances = []
+	distances_food = [0]
+
+	# Avalia a distância do pacman para cada comida
+	for food in foodGrid.asList():
+		distances.append(getMazeDistance(position, food))
+		# Para cada comida avalia a distancia dela para as outras comidas do labirinto
+		for tofood in foodGrid.asList():
+			distances_food.append(getMazeDistance(food, tofood))
+   
+	print(distances, len(distances))
+	print(distances_food, len(distances_food), "\n")
+
+	# Retorna a estimativa --> custo de distancia da comida mais próxima + custo da comida mais distante entre as comidas (a comida mais isolada)
+	return min(distances) + max(distances_food) if len(distances) else max(distances_food)
 
 
 class ClosestDotSearchAgent(SearchAgent):
