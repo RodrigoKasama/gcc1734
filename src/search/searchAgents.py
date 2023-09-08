@@ -649,16 +649,16 @@ class ClosestDotSearchAgent(SearchAgent):
 		self.actions = []
 		currentState = state
 		while (currentState.getFood().count() > 0):
-			nextPathSegment = self.findPathToClosestDot(
-				currentState)  # The missing piece
+			nextPathSegment = self.findPathToClosestDot(currentState)  # The missing piece
 			self.actions += nextPathSegment
+   
 			for action in nextPathSegment:
 				legal = currentState.getLegalActions()
 				if action not in legal:
 					t = (str(action), str(currentState))
-					raise Exception(
-						'findPathToClosestDot returned an illegal move: %s!\n%s' % t)
+					raise Exception('findPathToClosestDot returned an illegal move: %s!\n%s' % t)
 				currentState = currentState.generateChild(0, action)
+    
 		self.actionIndex = 0
 		print('Path found with cost %d.' % len(self.actions))
 
@@ -671,10 +671,12 @@ class ClosestDotSearchAgent(SearchAgent):
 		startPosition = gameState.getPacmanPosition()
 		food = gameState.getFood()
 		walls = gameState.getWalls()
+		# print(food.asList())
 		problem = AnyFoodSearchProblem(gameState)
+		
 
 		"*** YOUR CODE HERE ***"
-		util.raiseNotDefined()
+		# util.raiseNotDefined()
 
 
 class AnyFoodSearchProblem(PositionSearchProblem):
@@ -709,7 +711,7 @@ class AnyFoodSearchProblem(PositionSearchProblem):
 		complete the problem definition.
 		"""
 		x, y = state
-
+		return True if state in self.food.asList() else False
 		"*** YOUR CODE HERE ***"
 		util.raiseNotDefined()
 
