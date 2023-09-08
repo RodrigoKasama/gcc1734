@@ -90,6 +90,7 @@ class SearchProblem:
 		"""
 		util.raiseNotDefined()
 
+	# IDS NECESSITA DE DLS QUE SE BASEIA NO BFS
 
 def tinyMazeSearch(problem):
 	"""
