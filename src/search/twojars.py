@@ -324,11 +324,12 @@ def main():
 	for i in range(4):
 		for j in range(3):
 			start_state = TwoJarsState((i, j))
-   
+			# Teste do legalMoves
 			# print(TwoJarsState((i, j)))
 			# print("Ações possiveis: ", sorted(start_state.legalMoves()))
 			# print("Ações possiveis: ", sorted(start_state.legalMoves2()), "\n")
-   
+
+			# Teste das transições de estado (result)
 			for action in sorted(start_state.legalMoves2()):
 				print(start_state, action, start_state.result(action))
 			print()
