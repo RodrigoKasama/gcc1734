@@ -28,9 +28,9 @@ class TwoJarsState:
 		"""
 		  Checks to see if the pair of jars is in its goal state.
 
-						---------
-						| 2 | * |
-						---------
+										---------
+										| 2 | * |
+										---------
 
 		>>> TwoJarsState((2, 1)).isGoal()
 		True
@@ -62,29 +62,103 @@ class TwoJarsState:
 
 		>>> TwoJarsState((1, 3)).legalMoves()
 		['fillJ4', 'pourJ3intoJ4', 'emptyJ3', 'emptyJ4']
+		"*** YOUR CODE HERE ***"
 		"""
+
+		legalActions = []
+		j4, j3 = self.jars
+
+		if j4 == 0:
+				legalActions.extend(["fillJ4"])
+		elif j4 == self.max_capacity[0]:
+				legalActions.extend(["pourJ4intoJ3", "emptyJ4"])
+		else:
+				legalActions.extend(["fillJ4", "pourJ4intoJ3", "emptyJ4"])
+
+
+		if j3 == 0:
+				legalActions.extend(["fillJ3"])
+		elif j3 == self.max_capacity[1]:
+				legalActions.extend(["pourJ3intoJ4", "emptyJ3"])
+		else:
+				legalActions.extend(["fillJ3", "pourJ3intoJ4", "emptyJ3"])
+
+		return legalActions
+		util.raiseNotDefined()
+
+	def legalMoves2(self):
+		"""
+		  Returns a list of legal actions from the current state.
+
+		Actions consist of the following:
+		- fillJ3 (encher J3)
+		- fillJ4 (encher J4)
+		- pourJ3intoJ4 (despejar J3 em J4)
+		- pourJ4intoJ3 (despejar J4 em J3)
+		- emptyJ3 (esvaziar J3)
+		- emptyJ4 (esvaziar J4)
+
+		These are encoded as strings: 'fillJ3', 'fillJ4', 
+		'pourJ3intoJ4', 'pourJ4intoJ3', 'emptyJ3', 'emptyJ4'.
+
+		>>> TwoJarsState((1, 3)).legalMoves()
+		['fillJ4', 'pourJ3intoJ4', 'emptyJ3', 'emptyJ4']
 		"*** YOUR CODE HERE ***"
 
 		legalActions = []
 		j4, j3 = self.jars
 
 		if j4 == 0:
-			legalActions.extend(["fillJ4"])
+				legalActions.extend(["fillJ4"])
 		elif j4 == self.max_capacity[0]:
-			legalActions.extend(["pourJ4intoJ3", "emptyJ4"])
+				legalActions.extend(["pourJ4intoJ3", "emptyJ4"])
 		else:
-			legalActions.extend(["fillJ4", "pourJ4intoJ3", "emptyJ4"])
+				legalActions.extend(["fillJ4", "pourJ4intoJ3", "emptyJ4"])
 
-		
+
 		if j3 == 0:
-			legalActions.extend(["fillJ3"])
+				legalActions.extend(["fillJ3"])
 		elif j3 == self.max_capacity[1]:
-			legalActions.extend(["pourJ3intoJ4", "emptyJ3"])
+				legalActions.extend(["pourJ3intoJ4", "emptyJ3"])
 		else:
-			legalActions.extend(["fillJ3", "pourJ3intoJ4", "emptyJ3"])
+				legalActions.extend(["fillJ3", "pourJ3intoJ4", "emptyJ3"])
 
 		return legalActions
-		util.raiseNotDefined()
+		"""
+
+		moves = []
+		if self.jars[0] == 0:
+			moves.append('fillJ4')
+		if self.jars[1] == 0:
+			moves.append('fillJ3')
+
+		if self.jars[0] > 0 and self.jars[0] < 4:
+			moves.append('fillJ4')
+			moves.append('emptyJ4')
+
+			if self.jars[1] < 3:
+				moves.append('pourJ4intoJ3')
+
+		if self.jars[1] > 0 and self.jars[1] < 3:
+			moves.append('fillJ3')
+			moves.append('emptyJ3')
+
+			if self.jars[0] < 4:
+				moves.append('pourJ3intoJ4')
+
+		if self.jars[0] == 4:
+			moves.append('emptyJ4')
+
+			if self.jars[1] < 3:
+				moves.append('pourJ4intoJ3')
+
+		if self.jars[1] == 3:
+			moves.append('emptyJ3')
+
+			if self.jars[0] < 4:
+				moves.append('pourJ3intoJ4')
+
+		return moves
 
 	def result(self, move):
 		"""
@@ -113,32 +187,39 @@ class TwoJarsState:
 			sum_vol = sum(self.jars)
 			if move == "pourJ3intoJ4":
 				# print(self.jars, min(sum_vol, self.max_capacity[0]))
-				resultState = TwoJarsState((min(sum_vol, self.max_capacity[0]), 0))
+				resultState = TwoJarsState(
+					(min(sum_vol, self.max_capacity[0]), 0))
 				# print("j4 <- j3")
 			else:
-				resultState = TwoJarsState((0, min(sum_vol, self.max_capacity[1])))
+				resultState = TwoJarsState(
+					(0, min(sum_vol, self.max_capacity[1])))
 				# print("j4 -> j3")
 
 		else:
-			if move == "fillJ3":
-				resultState = TwoJarsState((self.jars[0], self.max_capacity[1]))
-				# print("Fill j3")
+			if move in ["fillJ3", "fillJ4"]:
+				if move == "fillJ3":
+					resultState = TwoJarsState(
+						(self.jars[0], self.max_capacity[1]))
+					# print("Fill j3")
+				else:
+					# print(move)
+					resultState = TwoJarsState(
+						(self.max_capacity[0], self.jars[1]))
+					# print("Fill j4")
 			else:
-				# print(move)
-				resultState = TwoJarsState((self.max_capacity[0], self.jars[1]))
-				# print("Fill j4")
-
+				print("Erro, enhuma opção valida")
+          
 		return resultState
 		util.raiseNotDefined()
 
 	# Utilities for comparison and display
 	def __eq__(self, other):
 		"""
-						Overloads '==' such that two pairs of jars with the same volume of water
+										Overloads '==' such that two pairs of jars with the same volume of water
 		  are equal. ['fillJ4', 'pourJ4intoJ3', 'emptyJ4', 'fillJ3']
 
 		  >>> TwoJarsState((0, 1)) == \
-						  TwoJarsState((1, 0)).result('left')
+										  TwoJarsState((1, 0)).result('left')
 		  True
 		"""
 		"*** YOUR CODE HERE ***"
@@ -161,54 +242,56 @@ class TwoJarsState:
 
 
 class TwoJarsSearchProblem(search.SearchProblem):
-    """
-      Implementation of a SearchProblem for the Two Jars domain
+	"""
+	  Implementation of a SearchProblem for the Two Jars domain
 
-      Each state is represented by an instance of an TwoJarsState.
-    """
-    def __init__(self, start_state):
-        "Creates a new TwoJarsSearchProblem which stores search information."
-        self.start_state = start_state
+	  Each state is represented by an instance of an TwoJarsState.
+	"""
 
-    def getStartState(self):
-        return self.start_state
+	def __init__(self, start_state):
+		"Creates a new TwoJarsSearchProblem which stores search information."
+		self.start_state = start_state
 
-    def isGoalState(self,state):
-        return state.isGoal()
+	def getStartState(self):
+		return self.start_state
 
-    def expand(self,state):
-        """
-          Returns list of (child, action, stepCost) pairs where
-          each child is either left, right, up, or down
-          from the original state and the cost is 1.0 for each
-        """
-        child = []
-        for a in self.getActions(state):
-            next_state = self.getNextState(state, a)
-            child.append((next_state, a, self.getActionCost(state, a, next_state)))
-        return child
+	def isGoalState(self, state):
+		return state.isGoal()
 
-    def getActions(self, state):
-        return state.legalMoves()
+	def expand(self, state):
+		"""
+		  Returns list of (child, action, stepCost) pairs where
+		  each child is either left, right, up, or down
+		  from the original state and the cost is 1.0 for each
+		"""
+		child = []
+		for a in self.getActions(state):
+			next_state = self.getNextState(state, a)
+			child.append(
+				(next_state, a, self.getActionCost(state, a, next_state)))
+		return child
 
-    def getActionCost(self, state, action, next_state):
-        assert next_state == state.result(action), (
-            "getActionCost() called on incorrect next state.")
-        return 1
+	def getActions(self, state):
+		return state.legalMoves()
 
-    def getNextState(self, state, action):
-        assert action in state.legalMoves(), (
-            "getNextState() called on incorrect action")
-        return state.result(action)
+	def getActionCost(self, state, action, next_state):
+		assert next_state == state.result(action), (
+			"getActionCost() called on incorrect next state.")
+		return 1
 
-    def getCostOfActionSequence(self, actions):
-        """
-         actions: A list of actions to take
+	def getNextState(self, state, action):
+		assert action in state.legalMoves(), (
+			"getNextState() called on incorrect action")
+		return state.result(action)
 
-        This method returns the total cost of a particular sequence of actions.  The sequence must
-        be composed of legal moves
-        """
-        return len(actions)
+	def getCostOfActionSequence(self, actions):
+		"""
+		 actions: A list of actions to take
+
+		This method returns the total cost of a particular sequence of actions.  The sequence must
+		be composed of legal moves
+		"""
+		return len(actions)
 
 
 def createRandomTwoJarsState(moves=10):
@@ -238,10 +321,28 @@ def main():
 
 	# print(a == b, a == c, b == c)
 
-	start_state = TwoJarsState((0,0))
+	for i in range(4):
+		for j in range(3):
+			start_state = TwoJarsState((i, j))
+   
+			# print(TwoJarsState((i, j)))
+			# print("Ações possiveis: ", sorted(start_state.legalMoves()))
+			# print("Ações possiveis: ", sorted(start_state.legalMoves2()), "\n")
+   
+			for action in sorted(start_state.legalMoves2()):
+				print(start_state, action, start_state.result(action))
+			print()
+
+	
+ 
+
+			
+	return
+	start_state = TwoJarsState((0, 0))
 	print('A random initial state:', start_state)
 
 	print("Ações possiveis: ", start_state.legalMoves())
+	print("Ações possiveis: ", start_state.legalMoves2())
 	print(str(start_state.result("fillJ3")))
 
 	print(start_state)
