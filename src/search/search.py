@@ -90,7 +90,7 @@ class SearchProblem:
 		"""
 		util.raiseNotDefined()
 
-	# IDS NECESSITA DE DLS QUE SE BASEIA NO BFS
+	# IDS NECESSITA DE DLS QUE SE BASEIA NO DFS
 
 def tinyMazeSearch(problem):
 	"""
@@ -253,8 +253,34 @@ def aStarSearch(problem, heuristic=nullHeuristic):
 	
 	util.raiseNotDefined()
 
-# *********************************************************************************************************************************************************************
+def recursiveDLS(node, problem, limit):
+    
+	if problem.isGoalState(node): 
+		return getActionSequence(node)
+	elif limit == 0: 
+		return -1
+	else:
+		had_cutoff = False
+		for action in problem.getActions(node["STATE"]):
+			print(action)
+			child = problem.getNextState(node["STATE"], action)
+			result = recursiveDLS(child, problem, limit - 1)
+   
+			if result == -1: had_cutoff = True
+			elif isinstance(result, list) and result: return result
+		return -1 if had_cutoff else []
 
+def depthLimitedSearch(problem, limit):
+	return recursiveDLS(getStartNode(problem), problem, limit)
+	
+def iterativeDeepingSearch(problem):
+	lim = 0
+	while 1:
+		result = depthLimitedSearch(problem, lim)
+		lim += 1
+		if result != -1: return result
+
+# *********************************************************************************************************************************************************************
 
 def getStartNode(problem):
 	return {"STATE": problem.getStartState(), "PATH-COST": 0}
@@ -279,3 +305,4 @@ def getActionSequence(node):
 bfs = breadthFirstSearch
 dfs = depthFirstSearch
 astar = aStarSearch
+ids = iterativeDeepingSearch

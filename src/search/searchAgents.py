@@ -80,9 +80,10 @@ class SearchAgent(Agent):
 
 		# Get the search function from the name and heuristic
 		if fn not in dir(search):
-			raise AttributeError(
-				fn + ' is not a search function in search.py.')
+			raise AttributeError(fn + ' is not a search function in search.py.')
+
 		func = getattr(search, fn)
+  
 		if 'heuristic' not in func.__code__.co_varnames:
 			print('[SearchAgent] using function ' + fn)
 			self.searchFunction = func
@@ -102,9 +103,10 @@ class SearchAgent(Agent):
 
 		# Get the search problem type from the name
 		if prob not in globals().keys() or not prob.endswith('Problem'):
-			raise AttributeError(
-				prob + ' is not a search problem type in SearchAgents.py.')
+			raise AttributeError(prob + ' is not a search problem type in SearchAgents.py.')
+
 		self.searchType = globals()[prob]
+  
 		print('[SearchAgent] using problem type ' + prob, "\n")
 
 	def registerInitialState(self, state):
@@ -119,11 +121,13 @@ class SearchAgent(Agent):
 		if self.searchFunction == None:
 			raise Exception("No search function provided for SearchAgent")
 		starttime = time.time()
+  
 		problem = self.searchType(state)  # Makes a new search problem
 		self.actions = self.searchFunction(problem)  # Find a path
 		totalCost = problem.getCostOfActionSequence(self.actions)
-		print('Path found with total cost of %d in %.1f seconds' %
-			  (totalCost, time.time() - starttime))
+  
+		print('Path found with total cost of %d in %.1f seconds' % (totalCost, time.time() - starttime))
+  
 		if '_expanded' in dir(problem):
 			print('Search nodes expanded: %d\n' % problem._expanded)
 
@@ -137,8 +141,10 @@ class SearchAgent(Agent):
 		"""
 		if 'actionIndex' not in dir(self):
 			self.actionIndex = 0
+   
 		i = self.actionIndex
 		self.actionIndex += 1
+  
 		if i < len(self.actions):
 			return self.actions[i]
 		else:
@@ -199,7 +205,7 @@ class PositionSearchProblem(search.SearchProblem):
 		Returns child states, the actions they require, and a cost of 1.
 
 		 As noted in search.py:
-																		 For a given state, this should return a list of triples,
+		 For a given state, this should return a list of triples,
 		 (child, action, stepCost), where 'child' is a
 		 child to the current state, 'action' is the action
 		 required to get there, and 'stepCost' is the incremental
@@ -477,8 +483,9 @@ def cornersHeuristic(state, problem):
 	"*** YOUR CODE HERE ***"
 	currentPosition = state[0]
 	goals = list(state[1])
- 
-	manhattan_fn = lambda pos, goal: abs(pos[0] - goal[0]) + abs(pos[1] + goal[1])
+
+	def manhattan_fn(pos, goal): return abs(
+		pos[0] - goal[0]) + abs(pos[1] + goal[1])
 	manDistances = [manhattan_fn(currentPosition, goal) for goal in goals]
 
 	# Não possui um bom resultado
@@ -489,11 +496,13 @@ def cornersHeuristic(state, problem):
 	return min(manDistances) if manDistances is None else 0
 	return max(eucliDistances) if eucliDistances else 0
 
+
 class AStarCornersAgent(SearchAgent):
 	"A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
 
 	def __init__(self):
-		self.searchFunction = lambda prob: search.aStarSearch(prob, cornersHeuristic)
+		self.searchFunction = lambda prob: search.aStarSearch(
+			prob, cornersHeuristic)
 		self.searchType = CornersProblem
 
 
@@ -612,7 +621,7 @@ def foodHeuristic(state, problem):
 
 	"""
 	position, foodGrid = state
- 
+
 	def getMazeDistance(start, end):
 		"""
 		Returns the maze distance between any two points, using the search functions
@@ -634,7 +643,7 @@ def foodHeuristic(state, problem):
 		# Para cada comida avalia a distancia dela para as outras comidas do labirinto
 		for tofood in foodGrid.asList():
 			distances_food.append(getMazeDistance(food, tofood))
-   
+
 	print(distances, len(distances))
 	print(distances_food, len(distances_food), "\n")
 
@@ -649,16 +658,18 @@ class ClosestDotSearchAgent(SearchAgent):
 		self.actions = []
 		currentState = state
 		while (currentState.getFood().count() > 0):
-			nextPathSegment = self.findPathToClosestDot(currentState)  # The missing piece
+			nextPathSegment = self.findPathToClosestDot(
+				currentState)  # The missing piece
 			self.actions += nextPathSegment
-   
+
 			for action in nextPathSegment:
 				legal = currentState.getLegalActions()
 				if action not in legal:
 					t = (str(action), str(currentState))
-					raise Exception('findPathToClosestDot returned an illegal move: %s!\n%s' % t)
+					raise Exception(
+						'findPathToClosestDot returned an illegal move: %s!\n%s' % t)
 				currentState = currentState.generateChild(0, action)
-    
+
 		self.actionIndex = 0
 		print('Path found with cost %d.' % len(self.actions))
 
