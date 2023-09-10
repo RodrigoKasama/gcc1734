@@ -316,7 +316,6 @@ def euclideanHeuristic(position, problem, info={}):
 # This portion is incomplete.  Time to write code!  #
 #####################################################
 
-
 class CornersProblem(search.SearchProblem):
 	"""
 	This search problem finds paths through all four corners of a layout.
@@ -333,20 +332,12 @@ class CornersProblem(search.SearchProblem):
 		top, right = self.walls.height-2, self.walls.width-2
 
 		self.corners = ((1, 1), (1, top), (right, 1), (right, top))
-		self.unvisitedCorners = []
 
 		for corner in self.corners:
 			if not startingGameState.hasFood(*corner):
 				print('Warning: no food in corner ' + str(corner))
 
 		self._expanded = 0  # DO NOT CHANGE; Number of search nodes expanded
-
-		# For display purposes
-		# self._visited, self._visitedlist, self._expanded = {}, [], 0  # DO NOT CHANGE
-
-		# Please add any code here which you would like to use
-		# in initializing the problem
-		"*** YOUR CODE HERE ***"
 		self.StartState = (self.startingPosition, self.corners)
 
 	def getStartState(self):
@@ -356,20 +347,12 @@ class CornersProblem(search.SearchProblem):
 		"""
 		return self.StartState
 
-		top, right = self.walls.height-2, self.walls.width-2
-		corners = [(1, 1), (1, top), (right, 1), (right, top)]
-		return (self.startingPosition, self.corners)
-		"*** YOUR CODE HERE ***"
-		util.raiseNotDefined()
-
 	def isGoalState(self, state):
 		"""
 		Returns whether this search state is a goal state of the problem.
 		"""
-		"*** YOUR CODE HERE ***"
 
 		return (len(state[1]) == 1 and state[1][0] == state[0] or len(state[1]) == 0)
-		util.raiseNotDefined()
 
 	def expand(self, state):
 		"""
@@ -394,11 +377,6 @@ class CornersProblem(search.SearchProblem):
 		# Bookkeeping for display purposes
 		self._expanded += 1  # DO NOT CHANGE
 
-		# if state not in self._visited:
-		# 	self._visited[state] = True
-		# 	self._visitedlist.append(state)
-
-		# print("Children:", children)
 		return children
 
 	def getActions(self, state):
@@ -414,8 +392,7 @@ class CornersProblem(search.SearchProblem):
 		return valid_actions_from_state
 
 	def getActionCost(self, state, action, next_state):
-		assert next_state == self.getNextState(
-			state, action), ("Invalid next state passed to getActionCost().")
+		assert next_state == self.getNextState(state, action), ("Invalid next state passed to getActionCost().")
 		return 1
 
 	def getNextState(self, state, action):
@@ -428,8 +405,6 @@ class CornersProblem(search.SearchProblem):
 
 		nextPosition = (nextx, nexty)
 		nextState = [nextPosition, ]
-
-		"*** YOUR CODE HERE ***"
 
 		# Se o próximo passo for um dos cantos, remove esse canto da lista de cantos não explorados, do contrpario retorna o state...
 
@@ -466,7 +441,6 @@ class CornersProblem(search.SearchProblem):
 				return 999999
 		return len(actions)
 
-
 def cornersHeuristic(state, problem):
 	"""
 	A heuristic for the CornersProblem that you defined.
@@ -480,29 +454,29 @@ def cornersHeuristic(state, problem):
 	corners = problem.corners  # These are the corner coordinates
 	# These are the walls of the maze, as a Grid (game.py)
 	walls = problem.walls
-	"*** YOUR CODE HERE ***"
+ 
 	currentPosition = state[0]
 	goals = list(state[1])
 
-	def manhattan_fn(pos, goal): return abs(
-		pos[0] - goal[0]) + abs(pos[1] + goal[1])
-	manDistances = [manhattan_fn(currentPosition, goal) for goal in goals]
+	euclidian_fn = lambda pos, goal: ((pos[0] - goal[0]) ** 2 + (pos[1] - goal[1]) ** 2) ** 0.5
+	
+	dis_foods = [0]
+	dis_goals = []
+ 
+	for goal1 in goals:
+		dis_goals.append(euclidian_fn(currentPosition, goal1))
+		for goal2 in goals:
+			dis_foods.append(euclidian_fn(goal1, goal2))
+   
+	return min(dis_goals) + max(dis_foods) if dis_goals else max(dis_foods) 
 
-	# Não possui um bom resultado
-	# euclidian_fn = lambda pos, goal: ((pos[0] - goal[0]) ** 2 + (pos[1] - goal[1]) ** 2) ** 0.5
-	# eucliDistances = [euclidian_fn(position, goal) for goal in goals]
-	# print(manDistances, max(manDistances))
-	# Default to trivial solution
-	return min(manDistances) if manDistances is None else 0
-	return max(eucliDistances) if eucliDistances else 0
 
 
 class AStarCornersAgent(SearchAgent):
 	"A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
 
 	def __init__(self):
-		self.searchFunction = lambda prob: search.aStarSearch(
-			prob, cornersHeuristic)
+		self.searchFunction = lambda prob: search.aStarSearch(prob, cornersHeuristic)
 		self.searchType = CornersProblem
 
 
@@ -517,8 +491,7 @@ class FoodSearchProblem:
 	"""
 
 	def __init__(self, startingGameState):
-		self.start = (startingGameState.getPacmanPosition(),
-					  startingGameState.getFood())
+		self.start = (startingGameState.getPacmanPosition(), startingGameState.getFood())
 		self.walls = startingGameState.getWalls()
 		self.startingGameState = startingGameState
 		self._expanded = 0  # DO NOT CHANGE
