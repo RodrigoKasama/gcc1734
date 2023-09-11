@@ -105,25 +105,28 @@ def tinyMazeSearch(problem):
 
 def depthFirstSearch(problem):
 	"""
+	Áreas vermelhas
+	python3 pacman.py -l tinyMaze -p SearchAgent && python3 pacman.py -l mediumMaze -p SearchAgent --frameTime 0.1 && python3 pacman.py -l bigMaze -z .5 -p SearchAgent --frameTime 0.01
 	Search the deepest nodes in the search tree first.
 
 	Your search algorithm needs to return a list of actions that reaches the
 	goal. Make sure to implement a graph search algorithm.
 
 	# Etapas:
-					1. Define o estado inicial do problema
-					2. Definimos a fronteira
-					3. Definimos a coleção de nós que já foram visitados
+		1. Define o estado inicial do problema
+		2. Definimos a fronteira # LIFO
+		3. Definimos a coleção de nós que já foram visitados
 
-					# Enquanto a fronteira não está vazia (todos os estados percorridos
-													Removemos ele da fronteira
-													Ele já foi explorado? Se sim, próxima iteração
-													Adicionamos a coleção de nós visitados...(Marcamos como percorrido)
-													Se ele é o objetivo buscado, então retornar o plano até esse estado (getActionSequence(node)) FIM
+		# Enquanto a fronteira não está vazia (todos os estados percorridos)
 
-													Como esse nó não nos interessa mais, adicionamos a lista de 'childs' desse nó à fronteira e seguimos em frente
+						Ele já foi explorado? Se sim, próxima iteração
+						Adicionamos a coleção de nós visitados...(Marcamos como percorrido)
+      
+						Se ele é o objetivo buscado, então retornar o plano até esse estado (getActionSequence(node)) FIM
 
-					return []; // Se retornou isso DEVE estar errado...
+						Como esse nó não nos interessa mais, adicionamos a lista de 'childs' desse nó à fronteira e seguimos em frente
+
+		return []; // Não encontrou solução
 
 	"""
 
@@ -160,20 +163,23 @@ def depthFirstSearch(problem):
 
 	return []
 	"""
-		A ordem de exploração foi de acordo com o esperado? O Pacman realmente passa por todos 
-		  os estados explorados no seu caminho para o objetivo?
+		O Pacman realmente passa por todos os estados explorados no seu caminho para o objetivo?
 	
 		Essa é uma solução ótima? Senão, discuta o que a busca em profundidade está fazendo de errado?
+  
 		- Não é uma solução ótima, visto que a natureza da BFS indica que será encontrados o plano "mais a esquerda" na árvore de busca.
+  
 		- Ao executar, podemos ver que no plano escolido pela IA foi o mais longo... 
-		- Mais alguma coisa?
 
 
 	"""
 
 
 def breadthFirstSearch(problem):
-	"""Search the shallowest nodes in the search tree first."""
+    
+	"""Search the shallowest nodes in the search tree first.
+    	python3 pacman.py -l mediumMaze -p SearchAgent -a fn=bfs && python3 pacman.py -l bigMaze -p SearchAgent -a fn=bfs -z .5
+ 	"""
 
 	initialNode = getStartNode(problem)
 
@@ -217,7 +223,12 @@ def nullHeuristic(state, problem=None):
 
 
 def aStarSearch(problem, heuristic=nullHeuristic):
-	"""Search the node that has the lowest combined cost and heuristic first."""
+	"""Search the node that has the lowest combined cost and heuristic first.
+ 
+	python3 pacman.py -l mediumMaze -z .5 -p SearchAgent -a fn=astar,heuristic=manhattanHeuristic && python3 pacman.py -l bigMaze -z .5 -p SearchAgent -a fn=astar,heuristic=manhattanHeuristic
+
+	python3 pacman.py -l openMaze -z .5 -p SearchAgent -a fn=dfs && python3 pacman.py -l openMaze -z .5 -p SearchAgent -a fn=bfs && python3 pacman.py -l openMaze -z .5 -p SearchAgent -a fn=astar,heuristic=manhattanHeuristic
+ 	"""
 
 	# Nó inicial
 	node = getStartNode(problem)

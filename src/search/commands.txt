@@ -15,10 +15,11 @@ python3 eightpuzzle.py
 python3 pacman.py -l mediumDottedMaze -p StayEastSearchAgent
 python3 pacman.py -l mediumScaryMaze -p StayWestSearchAgent
 
-python3 pacman.py -l bigMaze -z .5 -p SearchAgent -a fn=astar,heuristic=manhattanHeuristic 
+python3 pacman.py -l mediumMaze -z .5 -p SearchAgent -a fn=astar,heuristic=manhattanHeuristic && python3 pacman.py -l bigMaze -z .5 -p SearchAgent -a fn=astar,heuristic=manhattanHeuristic
 
-python3 pacman.py -l tinyCorners -p SearchAgent -a fn=bfs,prob=CornersProblem
-python3 pacman.py -l mediumCorners -p SearchAgent -a fn=bfs,prob=CornersProblem
+python3 pacman.py -l openMaze -z .5 -p SearchAgent -a fn=dfs && python3 pacman.py -l openMaze -z .5 -p SearchAgent -a fn=bfs && python3 pacman.py -l openMaze -z .5 -p SearchAgent -a fn=astar,heuristic=manhattanHeuristic
+
+python3 pacman.py -l tinyCorners -p SearchAgent -a fn=bfs,prob=CornersProblem && python3 pacman.py -l mediumCorners -p SearchAgent -a fn=bfs,prob=CornersProblem
 
 python3 pacman.py -l mediumCorners -p AStarCornersAgent -z 0.5
 

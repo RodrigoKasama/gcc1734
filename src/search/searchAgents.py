@@ -321,6 +321,8 @@ class CornersProblem(search.SearchProblem):
 	This search problem finds paths through all four corners of a layout.
 
 	You must select a suitable state space and child function
+	
+	python3 pacman.py -l tinyCorners -p SearchAgent -a fn=bfs,prob=CornersProblem && python3 pacman.py -l mediumCorners -p SearchAgent -a fn=bfs,prob=CornersProblem
 	"""
 
 	def __init__(self, startingGameState):
@@ -338,6 +340,7 @@ class CornersProblem(search.SearchProblem):
 				print('Warning: no food in corner ' + str(corner))
 
 		self._expanded = 0  # DO NOT CHANGE; Number of search nodes expanded
+
 		self.StartState = (self.startingPosition, self.corners)
 
 	def getStartState(self):
@@ -406,12 +409,11 @@ class CornersProblem(search.SearchProblem):
 		nextPosition = (nextx, nexty)
 		nextState = [nextPosition, ]
 
-		# Se o próximo passo for um dos cantos, remove esse canto da lista de cantos não explorados, do contrpario retorna o state...
-
+		# Se o próximo passo for um dos cantos, remove esse canto da lista de cantos não explorados, do contrario retorna o state...
 		unvisited_corners = list(state[1]).copy()
 
-		# Se a proxima posição é um canto, remove o canto que vai ser visitado da lista de cantos não-visitados
-		# Do contrário,  retorna o mesmo state[1] anterior
+		# Se a proxima posição é um canto, remove o mesmo da lista de cantos não-visitados
+		# Do contrário, retorna o mesmo estado anterior
 
 		if nextPosition in state[1]:
 			unvisited_corners.remove(nextPosition)
@@ -450,6 +452,7 @@ def cornersHeuristic(state, problem):
 	This function should always return a number that is a lower bound on the
 	shortest path from the state to a goal of the problem; i.e.  it should be
 	admissible (as well as consistent).
+	Q5 - python3 pacman.py -l mediumCorners -p AStarCornersAgent -z 0.5
 	"""
 	corners = problem.corners  # These are the corner coordinates
 	# These are the walls of the maze, as a Grid (game.py)
@@ -591,6 +594,8 @@ def foodHeuristic(state, problem):
 	value, try: problem.heuristicInfo['wallCount'] = problem.walls.count()
 	Subsequent calls to this heuristic can access
 	problem.heuristicInfo['wallCount']
+ 
+	python3 pacman.py -l trickySearch -p AStarFoodSearchAgent
 
 	"""
 	position, foodGrid = state
@@ -650,6 +655,7 @@ class ClosestDotSearchAgent(SearchAgent):
 		"""
 		Returns a path (a list of actions) to the closest dot, starting from
 		gameState.
+  		python3 pacman.py -l bigSearch -p ClosestDotSearchAgent -z .5
 		"""
 		# Here are some useful elements of the startState
 		startPosition = gameState.getPacmanPosition()
