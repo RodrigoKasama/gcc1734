@@ -229,14 +229,14 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
 		Returns the minimax action using self.depth and self.evaluationFunction
 		"""
 		"*** YOUR CODE HERE ***"
-		minimax = self.minimax(gameState, agentIndex=0, depth=self.depth)
+		minimax = self.minimax(gameState)
 		return minimax['action']
   		# util.raiseNotDefined()
 	
-	
-	def minimax(self, gameState, agentIndex=0, depth='2', action=Directions.STOP, alpha, beta):
+	# 										   Era string '2' por algum motivo
+	def minimax(self, gameState, agentIndex=0, depth=2, action=Directions.STOP, alpha=float("-inf"), beta=float("inf")):
+  
 		agentIndex = agentIndex % gameState.getNumAgents()
-		# print(agentIndex)
 		if agentIndex == 0: 
 			depth = depth-1
 
@@ -244,32 +244,38 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
 			return {'value':self.evaluationFunction(gameState), 'action':action}
 		else:
 			if agentIndex == 0: 
-				return self.maxValue(gameState,agentIndex,depth, alpha=alpha, beta=beta)
+				return self.maxValue(gameState,agentIndex, depth, alpha=alpha, beta=beta)
 			else: 
-				return self.minValue(gameState,agentIndex,depth, alpha=alpha, beta=beta)
+				return self.minValue(gameState,agentIndex, depth, alpha=alpha, beta=beta)
+
 
 	def maxValue(self, gameState, agentIndex, depth, alpha, beta):
 		# Possiveis valores de agentIndex: 0
+		if gameState.isWin(): return gameState
 		v = {'value':float('-inf'), 'action':Directions.STOP}
-  
 		legalMoves = gameState.getLegalActions(agentIndex)
 
 		for action in legalMoves:
 			if action == Directions.STOP: continue
 			
 			successorGameState = gameState.generateSuccessor(agentIndex, action) 
-			
 			# 						Agora que o Agente Max jogou é a vez do agente + 1 --> Agente Min[0]
-			successorMinMax = self.minimax(successorGameState, agentIndex+1, depth, action)
+			successorMinMax = self.minimax(successorGameState, agentIndex+1, depth=depth, action=action, alpha=alpha, beta=beta)
 			
 			# se a ação tomada possui um valor maior que o default (-inf) substitua o valor
 			if v['value'] < successorMinMax['value']: 
 				v['value'] = successorMinMax['value']
 				v['action'] = action
+    
+			if v['value'] >= beta: return v
+   
+			# Posição disso está correta? Estou recebendo 0 no autograder...
+			alpha = max(alpha, v["value"])
 		return v
 
 
 	def minValue(self, gameState, agentIndex, depth, alpha, beta):
+  
 		v = {'value':float('inf'), 'action': Directions.STOP}
 		legalMoves = gameState.getLegalActions(agentIndex)
 
@@ -285,7 +291,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
 				v['action'] = action
 
 			if v['value'] <= alpha: return v
-
+			# Posição disso está correta? Estou recebendo 0 no autograder...
 			beta = min(beta, v['value'])
 
 		return v
