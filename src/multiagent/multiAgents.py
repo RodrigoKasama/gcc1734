@@ -76,10 +76,10 @@ class ReflexAgent(Agent):
 		newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
 
 		# print('Successor game state:\n', successorGameState)
-		print('Current position:', currPos, "-->", newPos)
+		# print('Current position:', currPos, "-->", newPos)
 		# print('oldFood:\n', oldFood)
 		# print('newFood:\n', newFood)
-		print('ghostPositions: ', ghostPositions)
+		# print('ghostPositions: ', ghostPositions)
 		# print('successorGameState.score: ', successorGameState.getScore())
 		# print('newScaredTimes: ', newScaredTimes)
 
@@ -196,7 +196,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
 			# 						Agora que o Agente Max jogou é a vez do agente + 1 --> Agente Min[0]
 			successorMinMax = self.minimax(successorGameState, agentIndex+1, depth, action)
 			
-			# se a ação tomada possui um valor maior que o default (-inf) substitua o valor
+			# Se a ação tomada possui um valor maior que o default (-inf) substitua o valor
 			if v['value'] < successorMinMax['value']: 
 				v['value'] = successorMinMax['value']
 				v['action'] = action
@@ -229,16 +229,16 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
 		Returns the minimax action using self.depth and self.evaluationFunction
 		"""
 		"*** YOUR CODE HERE ***"
-		minimax = self.minimax(gameState, self.depth)
+		minimax = self.minimax(gameState, 0, self.depth, alpha=float("-inf"), beta=float("inf"))
 		return minimax['action']
   		# util.raiseNotDefined()
 	
 	# 										   Era string '2' por algum motivo
-	def minimax(self, gameState, agentIndex=0, depth=2, action=Directions.STOP, alpha=float("-inf"), beta=float("inf")):
+	def minimax(self, gameState, agentIndex=0, depth="2", action=Directions.STOP, alpha=float("-inf"), beta=float("inf")):
   
 		agentIndex = agentIndex % gameState.getNumAgents()
 		if agentIndex == 0: 
-			depth = depth-1
+			depth = depth - 1
 
 		if gameState.isWin() or gameState.isLose() or depth == -1:
 			return {'value':self.evaluationFunction(gameState), 'action':action}
@@ -262,14 +262,14 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
 			# 						Agora que o Agente Max jogou é a vez do agente + 1 --> Agente Min[0]
 			successorMinMax = self.minimax(successorGameState, agentIndex+1, depth=depth, action=action, alpha=alpha, beta=beta)
 			
-			# se a ação tomada possui um valor maior que o default (-inf) substitua o valor
+			# Se a ação tomada possui um valor maior que o default (-inf) substitua o valor
 			if v['value'] < successorMinMax['value']: 
 				v['value'] = successorMinMax['value']
 				v['action'] = action
 	
-			if v['value'] >= beta: return v
+			if v['value'] > beta: return v
    
-			# Posição disso está correta? Estou recebendo 0 no autograder...
+
 			alpha = max(alpha, v["value"])
 		return v
 
@@ -290,7 +290,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
 				v['value'] = successorMinMax['value']
 				v['action'] = action
 
-			if v['value'] <= alpha: return v
+			if v['value'] < alpha: return v
 			# Posição disso está correta? Estou recebendo 0 no autograder...
 			beta = min(beta, v['value'])
 
@@ -309,7 +309,7 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
 		legal moves.
 		"""
 		"*** YOUR CODE HERE ***"
-		expectimax = expectimax(gameState, 0, self.depth)
+		expectimax = self.expectimax(gameState, 0, self.depth)
 		return expectimax['action']
 			
 	def expectimax(self, gameState, agentIndex=0, depth=2, action=Directions.STOP):
@@ -356,9 +356,6 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
 
 		v['action'] = random.choice(legalMoves)
 		return v
-   
-
-
 
 def betterEvaluationFunction(currentGameState):
 
@@ -390,7 +387,7 @@ def betterEvaluationFunction(currentGameState):
 	ghostStates = currentGameState.getGhostStates()
 	scaredTimes = [ghostState.scaredTimer for ghostState in ghostStates]
  
-	# score -= sum([timer * 90 for timer in scaredTimes])
+	# Score -= sum([timer * 90 for timer in scaredTimes])
  
 	# print(scaredTimes)
 
