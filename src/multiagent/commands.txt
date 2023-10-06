@@ -5,3 +5,6 @@ python3 pacman.py --frameTime 0 -p ReflexAgent -k 1
 python3 pacman.py --frameTime 0 -p ReflexAgent -k 2
 python3 autograder.py -q q1
 python3 autograder.py -q q1 --no-graphics
+
+Q4
+	python3 pacman.py -p ExpectimaxAgent -l minimaxClassic -a depth=3

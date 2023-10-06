@@ -229,7 +229,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
 		Returns the minimax action using self.depth and self.evaluationFunction
 		"""
 		"*** YOUR CODE HERE ***"
-		minimax = self.minimax(gameState)
+		minimax = self.minimax(gameState, self.depth)
 		return minimax['action']
   		# util.raiseNotDefined()
 	
@@ -266,7 +266,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
 			if v['value'] < successorMinMax['value']: 
 				v['value'] = successorMinMax['value']
 				v['action'] = action
-    
+	
 			if v['value'] >= beta: return v
    
 			# Posição disso está correta? Estou recebendo 0 no autograder...
@@ -309,17 +309,109 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
 		legal moves.
 		"""
 		"*** YOUR CODE HERE ***"
-		util.raiseNotDefined()
+			
+		def expectimax(gameState, agentIndex=0, depth=2, action=Directions.STOP):
+			agentIndex = agentIndex % gameState.getNumAgents()
+			if agentIndex == 0: 
+				depth = depth-1
+
+			if gameState.isWin() or gameState.isLose() or depth == -1:
+				return {'value':self.evaluationFunction(gameState), 'action':action}
+			else:
+				if agentIndex == 0: 
+					return maxValue(gameState,agentIndex, depth)
+				else: 
+					return minValue(gameState,agentIndex, depth)
+
+		def maxValue(gameState, agentIndex, depth):
+			v = {'value': float('-inf'), 'action': Directions.STOP}
+			legalMoves = gameState.getLegalActions(agentIndex)        
+			# legalMoves.remove("Stop")
+			# print(sorted(legalMoves))
+			for action in legalMoves:
+				if action == Directions.STOP: continue
+
+				successorGameState = gameState.generateSuccessor(agentIndex, action) 
+				successorExpectiMax = expectimax(successorGameState, agentIndex+1, depth, action)
+
+				if v['value'] < successorExpectiMax['value']:
+					v['value'] = successorExpectiMax['value']
+					v['action'] = action
+			return v
+
+		def minValue(gameState, agentIndex, depth):
+			v = {'value': 0, 'action': Directions.STOP}
+   
+			legalMoves = gameState.getLegalActions(agentIndex)
+			p = 1/len(legalMoves) 
+
+			for action in legalMoves:
+				if action == Directions.STOP: continue
+
+				successorGameState = gameState.generateSuccessor(agentIndex, action) 
+				successorExpectiMax = expectimax(successorGameState, agentIndex+1, depth, action)
+
+				v['value'] += p * successorExpectiMax['value']
+
+			v['action'] = random.choice(legalMoves)
+			return v
+   
+		expectimax = expectimax(gameState, 0, self.depth)
+		return expectimax['action']
+
 
 def betterEvaluationFunction(currentGameState):
-	"""
-	Your extreme ghost-hunting, pellet-nabbing, food-gobbling, unstoppable
-	evaluation function (question 5).
 
-	DESCRIPTION: <write something here so we know what you did>
 	"""
-	"*** YOUR CODE HERE ***"
-	util.raiseNotDefined()
+		Your extreme ghost-hunting, pellet-nabbing, food-gobbling, unstoppable
+		evaluation function (question 5).
+
+		DESCRIPTION: <write something here so we know what you did>
+	"""
+
+	# prioriza o estado que leva à vitória
+	if currentGameState.isWin():
+		return float("+inf")
+
+	# estado de derrota corresponde à pior avaliação
+	if currentGameState.isLose():
+		return float("-inf")
+
+	# variáveis a serem usadas na cálculo da função de avaliação
+	score = scoreEvaluationFunction(currentGameState)
+	newFoodList = currentGameState.getFood().asList()
+	newPos = currentGameState.getPacmanPosition()
+
+	#
+	# ATENÇÃO: variáveis não usadas AINDA! 
+	# Procure modificar essa função para usar essas variáveis e melhorar a função de avaliação.
+	# Descreva em seu relatório de que forma essas variáveis foram usadas.
+	#
+	ghostStates = currentGameState.getGhostStates()
+	scaredTimes = [ghostState.scaredTimer for ghostState in ghostStates]
+ 
+	# score -= sum([timer * 90 for timer in scaredTimes])
+ 
+	# print(scaredTimes)
+
+	# calcula distância entre o agente e a pílula mais próxima
+	minDistanceFood = float("+inf")
+
+	for foodPos in newFoodList:
+		minDistanceFood = min(minDistanceFood, util.manhattanDistance(foodPos, newPos))
+
+	# incentiva o agente a se aproximar mais da pílula mais próxima
+	score -= 2 * minDistanceFood
+
+	# incentiva o agente a comer pílulas 
+	score -= 4 * len(newFoodList)
+ 
+	
+	# incentiva o agente a se mover para príximo das cápsulas
+	capsulelocations = currentGameState.getCapsules()
+	score -= 4 * len(capsulelocations)
+
+	return score
 
 # Abbreviation
 better = betterEvaluationFunction
