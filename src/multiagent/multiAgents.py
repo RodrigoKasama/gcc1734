@@ -66,14 +66,14 @@ class ReflexAgent(Agent):
 		"""
 		#Useful information you can extract from a GameState (pacman.py)
 		successorGameState = currentGameState.generatePacmanSuccessor(action)
-		currPos = currentGameState.getPacmanPosition()
+		# currPos = currentGameState.getPacmanPosition()
 		newPos = successorGameState.getPacmanPosition()
-		oldFood = currentGameState.getFood()
+		# oldFood = currentGameState.getFood()
 		newFood = successorGameState.getFood()
 		newFoodList = newFood.asList()
 		ghostPositions = successorGameState.getGhostPositions()
 		newGhostStates = successorGameState.getGhostStates()
-		newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
+		# newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
 
 		# print('Successor game state:\n', successorGameState)
 		# print('Current position:', currPos, "-->", newPos)
@@ -88,14 +88,14 @@ class ReflexAgent(Agent):
 		for ghostPos in ghostPositions:
 			minDistanceGhost = min(minDistanceGhost, util.manhattanDistance(newPos, ghostPos))
 
+		# Extremos estados terminais...
 		# Se a acao selecionada == colisão com o ghost, pontuação é mínima
 		if minDistanceGhost == 0 : return float("-inf")
-
 		# Se a acao == vitoria, pontuação é máxima
 		if successorGameState.isWin() : return float("+inf")
 
 		score = successorGameState.getScore()
-  
+
 		# Incentiva levar o agente para longe do fantasma mais próximo
 		score += 2 * minDistanceGhost
 
@@ -171,17 +171,20 @@ class MinimaxAgent(MultiAgentSearchAgent):
 		return minimax['action']
 
 	def minimax(self, gameState, agentIndex=0, depth='2', action=Directions.STOP):
+		# Função que gerencia a ordem da arvore de busca entre os agentes Max e Min OU caso o estado seja terminal faz o backpropagation
 		agentIndex = agentIndex % gameState.getNumAgents()
-		# print(agentIndex)
+		# Se profundidade alcançada
 		if agentIndex == 0: 
 			depth = depth-1
-
+		# Se Estado Terminal
 		if gameState.isWin() or gameState.isLose() or depth == -1:
 			return {'value':self.evaluationFunction(gameState), 'action':action}
 		else:
+			# Se agente Max
 			if agentIndex == 0: 
 				return self.maxValue(gameState,agentIndex,depth)
 			else: 
+				# Agente Min
 				return self.minValue(gameState,agentIndex,depth)
 
 	def maxValue(self, gameState, agentIndex, depth):
@@ -233,9 +236,9 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
 		return minimax['action']
   		# util.raiseNotDefined()
 	
-	# 										   Era string '2' por algum motivo
+	
 	def minimax(self, gameState, agentIndex=0, depth="2", action=Directions.STOP, alpha=float("-inf"), beta=float("inf")):
-  
+		# Aqui consiste na mesma lógica que Minimax
 		agentIndex = agentIndex % gameState.getNumAgents()
 		if agentIndex == 0: 
 			depth = depth - 1
@@ -248,6 +251,8 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
 			else: 
 				return self.minValue(gameState,agentIndex, depth, alpha=alpha, beta=beta)
 
+	# Entretando os métodos max/minValue são levemente lterados
+	#  para reduzir a quantidade de nós explorados de acordo com o maior ou menor (dependendo do agente) nó já explorado.
 
 	def maxValue(self, gameState, agentIndex, depth, alpha, beta):
 		# Possiveis valores de agentIndex: 0
@@ -266,10 +271,11 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
 			if v['value'] < successorMinMax['value']: 
 				v['value'] = successorMinMax['value']
 				v['action'] = action
-	
-			if v['value'] > beta: return v
-   
 
+			# Caso o valor seja maior que o beta, então retornaremos esse estado para superar o agente MIN
+			if v['value'] > beta: return v
+
+			# Caso não seja, maximizamos o alfa o quanto podemos
 			alpha = max(alpha, v["value"])
 		return v
 
@@ -290,8 +296,10 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
 				v['value'] = successorMinMax['value']
 				v['action'] = action
 
+			# Caso o valor seja menor que o alfa, então retornaremos esse estado para superar o agente MAX
 			if v['value'] < alpha: return v
-			# Posição disso está correta? Estou recebendo 0 no autograder...
+
+			# Caso não seja, minimizamos o beta o quanto podemos
 			beta = min(beta, v['value'])
 
 		return v
@@ -313,6 +321,7 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
 		return expectimax['action']
 			
 	def expectimax(self, gameState, agentIndex=0, depth=2, action=Directions.STOP):
+		# Função similar as estratégias anteriores
 		agentIndex = agentIndex % gameState.getNumAgents()
 		if agentIndex == 0: 
 			depth = depth-1
@@ -326,6 +335,7 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
 				return self.minValue(gameState,agentIndex, depth)
 
 	def maxValue(self, gameState, agentIndex, depth):
+		# Função equivalente a minimax
 		v = {'value': float('-inf'), 'action': Directions.STOP}
 		legalMoves = gameState.getLegalActions(agentIndex)        
 
@@ -341,9 +351,12 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
 		return v
 
 	def minValue(self, gameState, agentIndex, depth):
+		# Similar ao agente Min de Minimax, porém escolhe de forma aleatória com um custo médio entre os movimentos o próximo movimento de acordo com a 
+		# probabilidade p. Entretando as probabilidades podem variar em certos contextos de jogos.
 		v = {'value': 0, 'action': Directions.STOP}
    
 		legalMoves = gameState.getLegalActions(agentIndex)
+		# Define P(action) -> Uniforme
 		p = 1/len(legalMoves) 
 
 		for action in legalMoves:
