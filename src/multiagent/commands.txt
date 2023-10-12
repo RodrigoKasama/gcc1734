@@ -18,6 +18,7 @@ Q3 - AlphaBeta
 Q4 - ExpectiMax
 	python3 pacman.py -p ExpectimaxAgent -l minimaxClassic -a depth=3
 	Pacman Cavalheiro
+		python3 pacman.py -p ExpectimaxAgent -l trappedClassic -a depth=3 --frameTime 2 -n 10
 		python pacman.py -p AlphaBetaAgent -l trappedClassic -a depth=3 -q -n 10 # 0/10
 		python pacman.py -p ExpectimaxAgent -l trappedClassic -a depth=3 -q -n 10 # ~5/10
 	python3 autograder.py -q q4 --no-graphics
