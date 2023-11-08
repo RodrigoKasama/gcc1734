@@ -259,6 +259,7 @@ def axiom_generator_pits_and_breezes(x, y, xmin, xmax, ymin, ymax):
     # axiom_str = ' & '.join(axioms)
     # return axiom_str
 
+
 def generate_pit_and_breeze_axioms(xmin, xmax, ymin, ymax):
     axioms = []
     for x in range(xmin, xmax + 1):
@@ -268,9 +269,12 @@ def generate_pit_and_breeze_axioms(xmin, xmax, ymin, ymax):
         utils.print_not_implemented('axiom_generator_pits_and_breezes')
     return axioms
 
-
+# INteresse
 def axiom_generator_wumpus_and_stench(x, y, xmin, xmax, ymin, ymax):
     """
+    Gera os axiomas acerca do fedor de acordo com a posição do wumpus..
+    Caso a posição seja válida (Não ultrapasse as bordas), será adicionado ao KB
+    
     Assert that Stenches (atemporal) are only found in locations where
     there are one or more Wumpi in a neighboring location (or the same location!)
 
@@ -291,7 +295,9 @@ def axiom_generator_wumpus_and_stench(x, y, xmin, xmax, ymin, ymax):
     return axiom_str
 
 
+# INteresse
 def generate_wumpus_and_stench_axioms(xmin, xmax, ymin, ymax):
+    # Para cada posição do tabuleiro cria-se os axiomas referente ao fedor adjacente ao wumpus
     axioms = []
     for x in range(xmin, xmax + 1):
         for y in range(ymin, ymax + 1):
