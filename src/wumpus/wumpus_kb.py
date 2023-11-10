@@ -295,7 +295,7 @@ def axiom_generator_wumpus_and_stench(x, y, xmin, xmax, ymin, ymax):
     return axiom_str
 
 
-# INteresse
+# Interesse
 def generate_wumpus_and_stench_axioms(xmin, xmax, ymin, ymax):
     # Para cada posição do tabuleiro cria-se os axiomas referente ao fedor adjacente ao wumpus
     axioms = []

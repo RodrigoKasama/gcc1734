@@ -312,8 +312,8 @@ class HybridWumpusAgent(Explorer):
                 query = logic.expr(state_loc_str(x, y, self.time))
                 result = self.kb.ask(query)
                 if result:
-                    self.belief_location = loc_proposition_to_tuple(
-                        '{0}'.format(query))
+                    self.belief_location = loc_proposition_to_tuple('{0}'.format(query))
+
         if not self.belief_location:
             verbose("FAILED TO INFER belief location, assuming at initial location (entrance).")
             self.belief_location = self.initial_location
@@ -348,10 +348,14 @@ class HybridWumpusAgent(Explorer):
         '''
           Implementation of Hybrid-Wumpus-Agent of [Fig. 7.20], p.260 
         '''
+        # Lógica do Agente Híbrido..
+        
         # update belief location and heading based on current KB knowledge state
+        # Coleta e define onde o agente está no no momento
         self.infer_and_set_belief_location()
         self.infer_and_set_belief_heading()
-
+        
+		# Coleta as insformaçoes do ambiente
         percept_sentence = self.make_percept_sentence(percept)
 
         verbose("Percept at time {0}: {1}".format(self.time, percept_sentence))
@@ -365,7 +369,7 @@ class HybridWumpusAgent(Explorer):
         clauses_before = len(self.kb.clauses)
         verbose("Prepare to add temporal axioms")
         verbose("Number of clauses in KB before: {0}".format(clauses_before))
-        
+        # Adiciona ao kb as informaçoes inferidas nesse passo de tempo
         self.add_temporal_axioms()
 
         clauses_after = len(self.kb.clauses)
@@ -374,19 +378,21 @@ class HybridWumpusAgent(Explorer):
         self.number_of_clauses_over_epochs.append(len(self.kb.clauses))
 
         safe = None
-
+		# Se há um 
         # If Glitter, Grab gold and leave
         if self.kb.ask(percept_glitter_str(self.time)):
+            # Define um plano de fuga com base nos locais que ele sabe que são seguros, na posição do agente e a direção dele. 
+            # Adiciona a esse plano as ações: Pegar o ouro + Ir para o inicio + Escalar p sair... Algoritmo de busca A*
             verbose("Grab gold and leave!")
             safe = self.find_OK_locations()
             start_time = time.perf_counter()
             self.plan = [action_grab_str(None)] \
-                + plan_route(self.belief_location, self.belief_heading,
-                             [self.initial_location], safe) \
+                + plan_route(self.belief_location, self.belief_heading,[self.initial_location], safe) \
                 + [action_climb_str(None)]
             end_time = time.perf_counter()
             verbose("time elapsed while executing plan_route():" + " {0}".format(end_time-start_time))
 
+		# Se não definiu um plano com a condição anterior só atualize os locais seguros...
         # Update safe locations only if we don't have a plan
         if self.plan:
             verbose("Already have plan"
@@ -395,7 +401,8 @@ class HybridWumpusAgent(Explorer):
         elif safe == None:
             verbose("No current plan, find one...")
             safe = self.find_OK_locations()
-
+            
+		# Caso n tenha plano defindo, visite locais seguros ainda não-visitados...
         # Visit unvisited safe square
         if not self.plan:
             verbose("Plan to visit safe square...")
@@ -414,6 +421,7 @@ class HybridWumpusAgent(Explorer):
             verbose("time elapsed while executing plan_route():" + " {0}".format(end_time-start_time))
 
         # Shoot arrow to try to kill the Wumpus and clear path
+        # Planejar matar o wumpus de acordo com os conhecimentos que tem (locais não visitados, locais onde ouviu barulho...)
         if not self.plan and self.kb.ask(logic.expr(state_have_arrow_str(self.time))):
             verbose("Plan to shoot wumpus...")
             possible_wumpus = self.find_possible_wumpus_locations()
@@ -424,6 +432,8 @@ class HybridWumpusAgent(Explorer):
             if logging.INFO >= logging.root.level:
                 end_time = time.perf_counter()
                 verbose("time elapsed while executing plan_shot():" + " {0}".format(end_time-start_time))
+                
+        # Se não há escolha segura, arrisque, dê um passo no escuro e reze...
         # No safe choice, take risk with an unknown square
         if not self.plan:
             verbose("No safe choice, take risk...")
@@ -441,6 +451,8 @@ class HybridWumpusAgent(Explorer):
                 end_time = time.perf_counter()
                 verbose("time elapsed while executing plan_route():"
                       + " {0}".format(end_time-start_time))
+                
+        # Se nada deu certo, o plano é sair dai!
         # No choices left, leave!
         if not self.plan:
             if logging.INFO >= logging.root.level:
@@ -455,7 +467,7 @@ class HybridWumpusAgent(Explorer):
                       + " {0}".format(end_time-start_time))
 
         verbose("Plan: {0}".format(self.plan))
-
+		# Faz a ação do plano definido
         action = self.plan.pop(0)  # take next action in plan
 
         verbose("Selected action: {0}".format(action))
