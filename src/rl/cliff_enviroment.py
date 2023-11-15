@@ -1,0 +1,30 @@
+from environment import Environment
+
+class CliffEnviroment(Environment):
+	def __init__(self, env):
+		super().__init__(env)
+		"""
+			There are 3 x 12 + 1 possible states. The player cannot be at the cliff, nor at the goal as the latter results in the end of the episode. What remains are all the positions of the first 3 rows plus the bottom-left cell.
+			The observation is a value representing the player's current position as
+   				current_row * nrows + current_col (where both the row and col start at 0).
+			For example, the stating position can be calculated as follows: 3 * 12 + 0 = 36.
+			The observation is returned as an int().
+  		"""
+
+		# self.env.observation_space
+		self.state_id = self.env.observation_space.n
+	def get_num_states(self):
+		# return self.env.observation_space[0].n * self.env.observation_space[1].n * self.env.observation_space[2].n
+		pass
+
+	def get_num_actions(self):
+		# return self.env.action_space.n
+		pass
+
+	def get_state_id(self, state):
+		return self.state_id
+		pass
+
+	def get_random_action(self):
+		# return self.env.action_space.sample()
+		pass

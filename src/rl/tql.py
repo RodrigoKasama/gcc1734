@@ -70,8 +70,9 @@ class QLearningAgentTabular:
         new_state_id = self.env.get_state_id(new_state)
         new_state = new_state_id
         assert (not truncated)
-
-        if reward == -10:
+		
+		# Avaliar com o professor - por que -1? a recompensa no blackjack é -1, por exemplo
+        if reward == -1:
             total_penalties += 1
 
         self.update(state, action, reward, new_state)
