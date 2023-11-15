@@ -14,6 +14,7 @@ class QLearningAgentTabular:
 
     self.q_table = np.zeros((env.get_num_states(), env.get_num_actions()))
     print(f"self.q_table.shape: {self.q_table.shape}")
+    
     # self.q_table = np.zeros((env.observation_space.n, env.action_space.n))
     self.epsilon = 1.0
     self.max_epsilon = 1.0
@@ -39,9 +40,7 @@ class QLearningAgentTabular:
     '''
     Apply update rule Q(s,a):= Q(s,a) + lr * [R(s,a) + gamma * max Q(s',a') - Q(s,a)]
     '''
-    self.q_table[state, action] = self.q_table[state, action] + \
-      self.learning_rate * (reward + self.gamma * \
-        np.max(self.q_table[next_state, :]) - self.q_table[state, action])
+    self.q_table[state, action] = self.q_table[state, action] + self.learning_rate * (reward + self.gamma * np.max(self.q_table[next_state, :]) - self.q_table[state, action])
 
   def train(self, num_episodes: int):
     rewards_per_episode = []

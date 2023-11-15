@@ -1,0 +1,27 @@
+Axiomas atemporais (Não demandam de um timestamp):
+B<x>_<y> 
+P<x>_<y> 
+W<x>_<y> 
+S<x>_<y> 
+
+Axiomas Temporais:
+
+L<x>_<y>_<t> 
+OK<x>_<y>_<t> 
+
+
+
+
+Proposition Bases:
+   Atemporal location-based propositions (include x,y index: P<x>_<y>)
+     'P', 'W', 'S', 'B'
+   Perceptual propositions (include time index: P<t>)
+     'Stench', 'Breeze', 'Glitter', 'Bump', 'Scream'
+   Location fluent propositions (include x,y and time index: P<x>_<y>_<t>)
+     'OK', 'L'
+   State fluent propositions (include time index: P<t>)
+     'HeadingNorth', 'HeadingEast', 'HeadingSouth', 'HeadingWest',
+     'HaveArrow', 'WumpusAlive'
+   Action propositions (include time index: P<t>)
+     'Forward', 'Grab', 'Shoot', 'Climb', 'TurnLeft', 'TurnRight', 'Wait'
+

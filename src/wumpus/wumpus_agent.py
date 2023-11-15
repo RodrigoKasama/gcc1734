@@ -361,6 +361,7 @@ class HybridWumpusAgent(Explorer):
         verbose("Percept at time {0}: {1}".format(self.time, percept_sentence))
         
         # update the agent's KB based on percepts
+        # Recebe novas informações com base nas percepçoes do agente ()
         self.kb.tell(percept_sentence)
 
         if self.keep_axioms:
@@ -369,6 +370,7 @@ class HybridWumpusAgent(Explorer):
         clauses_before = len(self.kb.clauses)
         verbose("Prepare to add temporal axioms")
         verbose("Number of clauses in KB before: {0}".format(clauses_before))
+        
         # Adiciona ao kb as informaçoes inferidas nesse passo de tempo
         self.add_temporal_axioms()
 
@@ -377,8 +379,9 @@ class HybridWumpusAgent(Explorer):
         verbose("Total clauses added to KB: {0}".format(clauses_after - clauses_before))
         self.number_of_clauses_over_epochs.append(len(self.kb.clauses))
 
+		# A principio o agente não está seguro...
         safe = None
-		# Se há um 
+        
         # If Glitter, Grab gold and leave
         if self.kb.ask(percept_glitter_str(self.time)):
             # Define um plano de fuga com base nos locais que ele sabe que são seguros, na posição do agente e a direção dele. 
@@ -392,7 +395,7 @@ class HybridWumpusAgent(Explorer):
             end_time = time.perf_counter()
             verbose("time elapsed while executing plan_route():" + " {0}".format(end_time-start_time))
 
-		# Se não definiu um plano com a condição anterior só atualize os locais seguros...
+		# Se não há um plano com a condição anterior só atualize os locais seguros...
         # Update safe locations only if we don't have a plan
         if self.plan:
             verbose("Already have plan"
@@ -401,8 +404,12 @@ class HybridWumpusAgent(Explorer):
         elif safe == None:
             verbose("No current plan, find one...")
             safe = self.find_OK_locations()
-            
-		# Caso n tenha plano defindo, visite locais seguros ainda não-visitados...
+        
+        
+        # Busca explorar locais seguros não-visitados
+        
+        
+		# Caso n tenha plano defindo, visite locais seguros ainda não-visitados... se não há locais não visitados ele planeja matar o wumpus
         # Visit unvisited safe square
         if not self.plan:
             verbose("Plan to visit safe square...")
