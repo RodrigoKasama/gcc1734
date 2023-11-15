@@ -13,7 +13,7 @@ class BlackjackEnvironment(Environment):
                     self.state_to_id_dict[s] = idx
                     self.id_to_state_dict[idx] = s
                     idx += 1
-        print(len(self.state_to_id_dict))
+        # print(len(self.state_to_id_dict))
 
     def get_num_states(self):
         return self.env.observation_space[0].n * self.env.observation_space[1].n * self.env.observation_space[2].n

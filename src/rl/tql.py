@@ -78,8 +78,7 @@ class QLearningAgentTabular:
 
         if (terminated or truncated):
           # Reduce epsilon to decrease the exploration over time
-          self.epsilon = self.min_epsilon + (self.max_epsilon - self.min_epsilon) * \
-            np.exp(-self.decay_rate * episode)
+          self.epsilon = self.min_epsilon + (self.max_epsilon - self.min_epsilon) * np.exp(-self.decay_rate * episode)
           self.epsilons_.append(self.epsilon)
 
         state = new_state

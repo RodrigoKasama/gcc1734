@@ -35,6 +35,7 @@ if __name__ == "__main__":
     env = environment_dict[env_name](env)
 
     agent = QLearningAgentLinear(env, learning_rate = learning_rate, epsilon_decay_rate = epsilon_decay_rate, gamma = gamma)
+    
     penalties_per_episode, rewards_per_episode, cumulative_successful_episodes = agent.train(num_episodes)
     agent.save(args.env_name + "-lql-agent.pkl")
 
