@@ -72,7 +72,7 @@ class QLearningAgentTabular:
         assert (not truncated)
 		
 		# Avaliar com o professor - por que -1? a recompensa no blackjack é -1, por exemplo
-        if reward == -1:
+        if reward == -100:
             total_penalties += 1
 
         self.update(state, action, reward, new_state)

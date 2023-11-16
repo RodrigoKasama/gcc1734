@@ -7,19 +7,20 @@ from tql import QLearningAgentTabular
 
 from taxi_environment import TaxiEnvironment
 from blackjack_environment import BlackjackEnvironment
-
+from cliff_enviroment import CliffEnviroment
 environment_dict = {
     "Blackjack-v1": BlackjackEnvironment,
-    "Taxi-v3": TaxiEnvironment
+    "Taxi-v3": TaxiEnvironment,
+    "CliffWalking-v0": CliffEnviroment
 }
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--num_episodes", type=int, default=60000, help="Number of episodes")
+    parser.add_argument("--num_episodes", type=int, default=20000, help="Number of episodes")
     parser.add_argument("--env_name", type=str, default="Taxi-v3", help="Environment name")
     parser.add_argument("--decay_rate", type=float, default=0.0001, help="Decay rate")
-    parser.add_argument("--learning_rate", type=float, default=0.001, help="Learning rate")
-    parser.add_argument("--gamma", type=float, default=0.8, help="Gamma")
+    parser.add_argument("--learning_rate", type=float, default=0.1, help="Learning rate")
+    parser.add_argument("--gamma", type=float, default=0.616, help="Gamma")
     args = parser.parse_args()
 
     num_episodes = args.num_episodes
