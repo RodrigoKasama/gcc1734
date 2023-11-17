@@ -11,10 +11,7 @@ class CliffEnviroment(Environment):
 			For example, the stating position can be calculated as follows: 3 * 12 + 0 = 36.
 			The observation is returned as an int().
   		"""
-		# self.env.state_id = 36 -> Posição inicial?
-		# self.xstate = int(self.env.observation_space.n % 12)
-		# self.ystate = int(self.env.observation_space.n / 12)
-		
+		self.penalty_value = -100	
   
 	def get_num_states(self):
 		return self.env.observation_space.n
@@ -29,3 +26,6 @@ class CliffEnviroment(Environment):
 	def get_random_action(self):
 		return self.env.action_space.sample()
 		pass
+
+	def get_penalty_value(self):
+		return self.penalty_value

@@ -73,7 +73,7 @@ class BlackjackFeatureExtractor(FeatureExtractor):
     return 1.0
 
   def f1(self, state, action):
-    # Implemente esta e outras features que achar adequadas.
-    return 0 
+    # Diferença entre mão dos agentes ().
+    return state[0] - state[1]
 
 

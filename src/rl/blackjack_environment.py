@@ -3,6 +3,7 @@ from environment import Environment
 class BlackjackEnvironment(Environment):
     def __init__(self, env):
         super().__init__(env)
+        self.penalty_value = -1
         idx = 1
         self.state_to_id_dict = {}
         self.id_to_state_dict = {}
@@ -26,3 +27,7 @@ class BlackjackEnvironment(Environment):
 
     def get_random_action(self):
         return self.env.action_space.sample()
+    
+    def get_penalty_value(self):
+        return self.penalty_value
+
