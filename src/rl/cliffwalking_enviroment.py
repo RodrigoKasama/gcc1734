@@ -11,7 +11,7 @@ class CliffEnviroment(Environment):
 			For example, the stating position can be calculated as follows: 3 * 12 + 0 = 36.
 			The observation is returned as an int().
   		"""
-		self.penalty_value = -100	
+		self.penalty_value = -100
   
 	def get_num_states(self):
 		return self.env.observation_space.n

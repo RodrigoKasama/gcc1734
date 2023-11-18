@@ -19,10 +19,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--num_episodes", type=int, default=10000, help="Number of episodes")
     parser.add_argument("--max_steps", type=int, default=200, help="Maximum number of steps per training episode")
-    parser.add_argument("--env_name", type=str, default="Taxi-v3", help="Environment name")
+    parser.add_argument("--env_name", type=str, default="CliffWalking-v0", help="Environment name")
     parser.add_argument("--epsilon_decay_rate", type=float, default=0.0001, help="Decay rate for the exploration rate")
-    parser.add_argument("--learning_rate", type=float, default=0.1, help="Learning rate")
-    parser.add_argument("--gamma", type=float, default=0.9, help="Gamma")
+    parser.add_argument("--learning_rate", type=float, default=0.5, help="Learning rate")
+    parser.add_argument("--gamma", type=float, default=0.725, help="Gamma")
     args = parser.parse_args()
 
     num_episodes = args.num_episodes

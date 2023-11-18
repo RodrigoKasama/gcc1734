@@ -23,7 +23,8 @@ class CliffFeatureExtractor(FeatureExtractor):
 		self.env = env
 		self.features_list = []
 		self.features_list.append(self.f0)
-		self.features_list.append(self.f1)
+		# self.features_list.append(self.f1)
+		# self.features_list.append(self.f2)
 
 	def get_num_features(self):
 		'''
@@ -52,7 +53,7 @@ class CliffFeatureExtractor(FeatureExtractor):
 		'''
 		Returns a list of available actions in the environment.
 		'''
-		return [Actions.UP, Actions.RIGHT, Actions.DOWN, Actions.LEFT]
+		return [Actions.UP, Actions.RIGHT, Actions.LEFT, Actions.DOWN]
 	
   
 	def get_features(self, state, action):
@@ -74,3 +75,23 @@ class CliffFeatureExtractor(FeatureExtractor):
 		This is just the bias term.
 		'''
 		return 1.0
+
+	def f1(self, state, action):
+		cliff_zone = [i for i in range(37, 45)]
+
+		if any(next_state in cliff_zone for next_state in (state + 12, state + 1, state - 1)):
+			return 1
+		else: 
+			return 0
+ 
+	# def f2(self, state, action):
+	# 	goal = [3,11]
+
+	# 	man = lambda p1, p2: abs(p1[0] - p2[0]) + abs(p1[1] - p2[1])
+	# 	xstate = int(state / 12)
+	# 	ystate = state % 12
+	# 	print(state)
+	# 	print((xstate, ystate))
+	# 	print(man((xstate, ystate), goal))
+	# 	input()
+	# 	return man((xstate, ystate), goal)
