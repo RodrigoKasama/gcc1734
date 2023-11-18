@@ -357,6 +357,7 @@ class HybridWumpusAgent(Explorer):
 		# Lógica do Agente Híbrido..
 		
 		# update belief location and heading based on current KB knowledge state
+  
 		# Coleta e define onde o agente está no no momento
 		self.infer_and_set_belief_location()
 		self.infer_and_set_belief_heading()
@@ -388,6 +389,8 @@ class HybridWumpusAgent(Explorer):
 		# A principio o agente não está seguro...
 		safe = None
 		
+		# Agora já coletei as infor que eu pudia.. hora de definir um plano....
+  
 		# If Glitter, Grab gold and leave
 		if self.kb.ask(percept_glitter_str(self.time)):
 			# Define um plano de fuga com base nos locais que ele sabe que são seguros, na posição do agente e a direção dele. 
