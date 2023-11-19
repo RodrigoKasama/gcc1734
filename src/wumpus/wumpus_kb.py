@@ -269,7 +269,7 @@ def generate_pit_and_breeze_axioms(xmin, xmax, ymin, ymax):
 		utils.print_not_implemented('axiom_generator_pits_and_breezes')
 	return axioms
 
-# Interesse
+
 def generate_wumpus_and_stench_axioms(xmin, xmax, ymin, ymax):
 	# Para cada posição do tabuleiro cria-se os axiomas referente ao fedor adjacente ao wumpus
 	axioms = []
@@ -280,7 +280,7 @@ def generate_wumpus_and_stench_axioms(xmin, xmax, ymin, ymax):
 		utils.print_not_implemented('axiom_generator_wumpus_and_stench')
 	return axioms
 
-# INteresse
+
 def axiom_generator_wumpus_and_stench(x, y, xmin, xmax, ymin, ymax):
 	"""
 	Gera os axiomas acerca do fedor de acordo com a posição do wumpus..
@@ -304,6 +304,8 @@ def axiom_generator_wumpus_and_stench(x, y, xmin, xmax, ymin, ymax):
 	wumpi.append('W'+str(x)+'_'+str(y))
 	axiom_str = '{0} <=> ({1})'.format(stench_str(x, y), (' | ').join(wumpi))
 	return axiom_str
+
+
 
 def axiom_generator_at_least_one_wumpus(xmin, xmax, ymin, ymax):
 	"""
