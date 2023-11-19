@@ -1,7 +1,7 @@
 from environment import Environment
 
 class CliffEnviroment(Environment):
-    # Namespace(num_episodes=60000, env_name='CliffWalking-v0', decay_rate=0.0001, learning_rate=0.1, gamma=0.616)
+    # python3 tql_train.py --num_episodes 40000  --env_name CliffWalking-v0  --decay_rate 0.0001  --learning_rate 0.1  --gamma 0.616
 	def __init__(self, env):
 		super().__init__(env)
 		"""

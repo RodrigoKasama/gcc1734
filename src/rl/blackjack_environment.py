@@ -1,6 +1,7 @@
 from environment import Environment
 
 class BlackjackEnvironment(Environment):
+    # python3 tql_train.py --num_episodes 100000 --env_name 'Blackjack-v1' --decay_rate 0.0001 --learning_rate 0.001 --gamma 0.6
     def __init__(self, env):
         super().__init__(env)
         self.penalty_value = -1
